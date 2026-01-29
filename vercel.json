@@ -1,5 +1,5 @@
 {
-  "buildCommand": "npm run build -- --configuration production",
-  "outputDirectory": "dist/walletwl-backoffice/browser",
-  "framework": null
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist/walletwl-backoffice",
+  "framework": "angular"
 }
