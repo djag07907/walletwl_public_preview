@@ -204,7 +204,7 @@ export class UsersComponent implements OnInit, OnDestroy {
   }
 
   private initializeData(): void {
-    // Fetch users
+    // Fetch users first
     this.usersService
       .getUsers()
       .pipe(takeUntil(this.destroy$))
@@ -217,18 +217,20 @@ export class UsersComponent implements OnInit, OnDestroy {
         },
       });
 
-    // Fetch wallets for regular users
-    this.walletsService
-      .getWallets()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (wallets) => {
-          this.wallets.set(wallets);
-        },
-        error: (err) => {
-          console.error("UsersComponent: Error fetching wallets", err);
-        },
-      });
+    // Delay wallets subscription to prevent WebSocket session overload
+    setTimeout(() => {
+      this.walletsService
+        .getWallets()
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: (wallets) => {
+            this.wallets.set(wallets);
+          },
+          error: (err) => {
+            console.error("UsersComponent: Error fetching wallets", err);
+          },
+        });
+    }, 1000);
   }
 
   private initializeFilters(): void {
