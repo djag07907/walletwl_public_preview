@@ -151,20 +151,14 @@ export class ManualRechargeService {
       this.firestore,
       this.ADJUSTMENTS_COLLECTION,
     );
-    // TEMPORARILY REMOVED orderBy to diagnose 400 error
-    // const q = query(adjustmentsCollection, orderBy("createdAt", "desc"));
+    const q = query(adjustmentsCollection, orderBy("createdAt", "desc"));
 
     return new Observable<Adjustment[]>((observer) => {
       const unsubscribe = onSnapshot(
-        adjustmentsCollection, // Query the collection directly without orderBy
+        q,
         (snapshot) => {
           const adjustments = snapshot.docs.map(
             (doc) => ({ id: doc.id, ...doc.data() }) as Adjustment,
-          );
-          // Sort in memory as workaround
-          adjustments.sort(
-            (a, b) =>
-              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
           );
           observer.next(adjustments);
         },

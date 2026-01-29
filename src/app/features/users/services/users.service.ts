@@ -48,18 +48,15 @@ export class UsersService {
 
   getUsers(): Observable<User[]> {
     const usersCollection = collection(this.firestore, this.USERS_COLLECTION);
-    // TEMPORARILY REMOVED orderBy to fix 400 errors
-    // const q = query(usersCollection, orderBy("email"));
+    const q = query(usersCollection, orderBy("email"));
 
     const firestoreUsers$ = new Observable<User[]>((observer) => {
       const unsubscribe = onSnapshot(
-        usersCollection, // Query collection directly
+        q,
         (snapshot) => {
           const users = snapshot.docs.map(
             (doc) => ({ id: doc.id, ...doc.data() }) as User,
           );
-          // Sort in memory by email
-          users.sort((a, b) => (a.email || "").localeCompare(b.email || ""));
           observer.next(users);
         },
         (error) => {

@@ -122,6 +122,7 @@ export class ManualRechargeComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    // Start enriched wallets listener first (combines users + wallets)
     this.rechargeService
       .getEnrichedWallets()
       .pipe(takeUntil(this.destroy$))
@@ -134,17 +135,22 @@ export class ManualRechargeComponent implements OnInit, OnDestroy {
         },
       });
 
-    this.rechargeService
-      .getAdjustments()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (adjustments) => {
-          this.adjustments.set(adjustments);
-        },
-        error: (err) => {
-          console.error("Error fetching adjustments:", err);
-        },
-      });
+    // Delay adjustments listener to prevent WebSocket session overload
+    // This fixes the "Unknown SID" 400 error by preventing too many
+    // concurrent listeners from overwhelming the Firestore session
+    setTimeout(() => {
+      this.rechargeService
+        .getAdjustments()
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: (adjustments) => {
+            this.adjustments.set(adjustments);
+          },
+          error: (err) => {
+            console.error("Error fetching adjustments:", err);
+          },
+        });
+    }, 1000);
   }
 
   onSearchChange(query: string): void {
