@@ -28,14 +28,20 @@ export class WalletsService {
       this.firestore,
       this.WALLETS_COLLECTION,
     );
-    const q = query(walletsCollection, orderBy("createdAt", "desc"));
+    // Removed orderBy - sorting in memory instead
 
     const firestoreWallets$ = new Observable<Wallet[]>((observer) => {
       const unsubscribe = onSnapshot(
-        q,
+        walletsCollection,
         (snapshot) => {
           const wallets = snapshot.docs.map(
             (doc) => ({ id: doc.id, ...doc.data() }) as Wallet,
+          );
+          // Sort by createdAt in memory
+          wallets.sort(
+            (a, b) =>
+              new Date(b.createdAt || 0).getTime() -
+              new Date(a.createdAt || 0).getTime(),
           );
           observer.next(wallets);
         },
