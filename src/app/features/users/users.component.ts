@@ -205,11 +205,17 @@ export class UsersComponent implements OnInit, OnDestroy {
 
   private initializeData(): void {
     // Fetch users first
+    console.log("UsersComponent: Starting users subscription...");
     this.usersService
       .getUsers()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (users) => {
+          console.log(
+            "UsersComponent: Received users data:",
+            users.length,
+            "users",
+          );
           this.users.set(users);
         },
         error: (err) => {
@@ -219,11 +225,17 @@ export class UsersComponent implements OnInit, OnDestroy {
 
     // Delay wallets subscription to prevent WebSocket session overload
     setTimeout(() => {
+      console.log("UsersComponent: Starting wallets subscription...");
       this.walletsService
         .getWallets()
         .pipe(takeUntil(this.destroy$))
         .subscribe({
           next: (wallets) => {
+            console.log(
+              "UsersComponent: Received wallets data:",
+              wallets.length,
+              "wallets",
+            );
             this.wallets.set(wallets);
           },
           error: (err) => {
