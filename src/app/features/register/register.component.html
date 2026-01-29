@@ -1,0 +1,107 @@
+<p-toast></p-toast>
+
+<app-header-bar (supportClicked)="navigateToSupport()"></app-header-bar>
+<app-currencies-bar />
+
+<div class="register-wrapper">
+    <p-card styleClass="register-card">
+        <ng-template pTemplate="title">
+            <div class="register-title">
+                <h1>Template</h1>
+                <p>Complete los siguientes pasos para crear su cuenta</p>
+            </div>
+        </ng-template>
+
+        <ng-template pTemplate="content">
+            <p-steps [model]="steps" [activeIndex]="currentStep" styleClass="register-steps"></p-steps>
+
+            <div class="step-content">
+                <form [formGroup]="registerForm" class="step-form">
+                    <div *ngIf="currentStep === 0" class="step-panel">
+                        <div class="form-grid identification-grid">
+
+                            <app-select-label [label]="'País de su cuenta o tarjeta'" fieldId="country"
+                                [options]="countries" [placeholder]="'Seleccione un país'" formControlName="country"
+                                [errorMessage]="getFieldError('country')" />
+
+                            <app-input-label [label]="'Número de cuenta o tarjeta'" fieldId="accountOrCard"
+                                inputType="text" placeholder="Ingrese su número de cuenta o de tarjeta"
+                                formControlName="accountOrCard" [errorMessage]="getFieldError('accountOrCard')" />
+                        </div>
+                    </div>
+
+                    <div *ngIf="currentStep === 1" class="step-panel">
+                        <div class="form-grid personal-data-grid">
+                            <app-input-label [label]="'Nombres'" fieldId="names" inputType="text"
+                                placeholder="Ingrese sus nombres" formControlName="names"
+                                [errorMessage]="getFieldError('names')" />
+
+                            <app-input-label [label]="'Apellidos'" fieldId="lastNames" inputType="text"
+                                placeholder="Ingrese sus apellidos" formControlName="lastNames"
+                                [errorMessage]="getFieldError('lastNames')" />
+
+                            <app-input-label [label]="'Número de Identidad'" fieldId="identityNumber" inputType="text"
+                                placeholder="Ingrese su número de identidad sin guiones"
+                                formControlName="identityNumber" [errorMessage]="getFieldError('identityNumber')" />
+
+
+                            <app-input-label [label]="'Correo Electrónico'" fieldId="email" inputType="email"
+                                placeholder="Ingrese su correo electrónico" formControlName="email"
+                                [errorMessage]="getFieldError('email')" />
+
+                            <app-input-label [label]="'Teléfono Fijo'" fieldId="telephoneNumber" inputType="text"
+                                placeholder="Ingrese su teléfono fijo" formControlName="telephoneNumber"
+                                [errorMessage]="getFieldError('telephoneNumber')" />
+
+                            <app-input-label [label]="'Teléfono Móvil'" fieldId="phoneNumber" inputType="text"
+                                placeholder="Ingrese su teléfono móvil" formControlName="phoneNumber"
+                                [errorMessage]="getFieldError('phoneNumber')" />
+                        </div>
+                    </div>
+
+                    <div *ngIf="currentStep === 2" class="step-panel">
+                        <div class="form-grid security-grid">
+
+                            <app-input-label [label]="'Contraseña'" fieldId="password" inputType="password"
+                                placeholder="Ingrese su contraseña" formControlName="password" [showFeedback]="true"
+                                [errorMessage]="getFieldError('password')" />
+
+                            <app-input-label [label]="'Confirmar Contraseña'" fieldId="confirmPassword"
+                                inputType="password" placeholder="Confirme su contraseña"
+                                formControlName="confirmPassword" [errorMessage]="getFieldError('confirmPassword')" />
+
+                            <app-select-label [label]="'Pregunta de Seguridad'" fieldId="securityQuestion"
+                                [options]="securityQuestions" [placeholder]="'Seleccione una pregunta'"
+                                formControlName="securityQuestion" [errorMessage]="getFieldError('securityQuestion')" />
+
+                            <app-input-label [label]="'Respuesta'" fieldId="securityAnswer" inputType="text"
+                                placeholder="Ingrese su respuesta" formControlName="securityAnswer"
+                                [errorMessage]="getFieldError('securityAnswer')" />
+                        </div>
+                    </div>
+
+                    <div class="step-actions">
+                        <p-button *ngIf="currentStep > 0" label="Anterior" icon="pi pi-arrow-left" [text]="true"
+                            (onClick)="previous()" styleClass="register-prev-btn"></p-button>
+
+                        <p-button *ngIf="currentStep < steps.length - 1" label="Siguiente" icon="pi pi-arrow-right"
+                            iconPos="right" (onClick)="next()" styleClass="register-next-btn"></p-button>
+
+                        <p-button *ngIf="currentStep === steps.length - 1" label="Registrar" icon="pi pi-check"
+                            iconPos="right" [loading]="isLoading" (onClick)="submit()"
+                            styleClass="register-submit-btn"></p-button>
+                    </div>
+                </form>
+            </div>
+        </ng-template>
+    </p-card>
+
+    <p-card styleClass="login-link-card">
+        <ng-template pTemplate="content">
+            <div class="login-text" (click)="navigateToLogin()">
+                <i class="pi pi-sign-in"></i>
+                <span>¿Ya tienes una cuenta? Inicia sesión</span>
+            </div>
+        </ng-template>
+    </p-card>
+</div>

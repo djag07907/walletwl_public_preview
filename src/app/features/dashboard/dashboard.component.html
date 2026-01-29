@@ -1,0 +1,88 @@
+<div class="dashboard-container">
+
+  <div class="dashboard-header">
+    <div class="header-content">
+      <div class="header-text">
+        <h1 class="dashboard-title">{{ translationService.t('dashboard.title') }}</h1>
+        <p class="dashboard-subtitle">
+          <icon-calendar size="1rem"></icon-calendar>
+          <span class="date-long">{{ getFormattedDate('long') }}</span>
+          <span class="date-short">{{ getFormattedDate('short') }}</span>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="kpi-grid">
+    <app-kpi-card [data]="kpis[0]">
+      <icon-dollar size="1.25rem" icon></icon-dollar>
+      <icon-trending-up size="1rem" trendIcon *ngIf="kpis[0].trend === 'up'"></icon-trending-up>
+      <icon-trending-down size="1rem" trendIcon *ngIf="kpis[0].trend === 'down'"></icon-trending-down>
+    </app-kpi-card>
+
+    <app-kpi-card [data]="kpis[1]">
+      <icon-route size="1.25rem" icon></icon-route>
+      <icon-trending-up size="1rem" trendIcon *ngIf="kpis[1].trend === 'up'"></icon-trending-up>
+      <icon-trending-down size="1rem" trendIcon *ngIf="kpis[1].trend === 'down'"></icon-trending-down>
+    </app-kpi-card>
+
+    <app-kpi-card [data]="kpis[2]">
+      <icon-users size="1.25rem" icon></icon-users>
+      <icon-trending-up size="1rem" trendIcon *ngIf="kpis[2].trend === 'up'"></icon-trending-up>
+      <icon-trending-down size="1rem" trendIcon *ngIf="kpis[2].trend === 'down'"></icon-trending-down>
+    </app-kpi-card>
+
+    <app-kpi-card [data]="kpis[3]">
+      <icon-package size="1.25rem" icon></icon-package>
+      <icon-trending-up size="1rem" trendIcon *ngIf="kpis[3].trend === 'up'"></icon-trending-up>
+      <icon-trending-down size="1rem" trendIcon *ngIf="kpis[3].trend === 'down'"></icon-trending-down>
+    </app-kpi-card>
+  </div>
+
+  <div class="content-grid">
+    <app-card customClass="sales-trend-card">
+      <app-card-header customClass="flex-header">
+        <div class="card-header-text">
+          <app-card-title>{{ translationService.t('dashboard.collections_over_time') }}</app-card-title>
+          <p class="card-subtitle">{{ translationService.t('dashboard.revenue_last_30_days') }}</p>
+        </div>
+        <app-button variant="ghost" size="sm" customClass="details-btn">
+          {{ translationService.t('dashboard.view_details') }}
+          <icon-arrow-right size="1rem"></icon-arrow-right>
+        </app-button>
+      </app-card-header>
+      <app-card-content>
+        <div class="chart-placeholder">
+          {{ translationService.t('dashboard.chart_placeholder') }}
+        </div>
+      </app-card-content>
+    </app-card>
+
+    <app-card>
+      <app-card-header>
+        <app-card-title>{{ translationService.t('dashboard.charge_types') }}</app-card-title>
+        <p class="card-subtitle">{{ translationService.t('dashboard.best_performing_month') }}</p>
+      </app-card-header>
+      <app-card-content>
+        <app-top-transactions [transactions]="topTransactions"
+          [ordersLabel]="translationService.t('dashboard.orders')"></app-top-transactions>
+      </app-card-content>
+    </app-card>
+  </div>
+
+  <app-card>
+    <app-card-header customClass="flex-header">
+      <div class="card-header-text">
+        <app-card-title>{{ translationService.t('dashboard.recent_activity') }}</app-card-title>
+        <p class="card-subtitle">{{ translationService.t('dashboard.latest_updates') }}</p>
+      </div>
+      <app-button variant="ghost" size="sm" customClass="details-btn">
+        {{ translationService.t('dashboard.view_all') }}
+        <icon-arrow-right size="1rem"></icon-arrow-right>
+      </app-button>
+    </app-card-header>
+    <app-card-content>
+      <app-activity-list [activities]="recentActivities"></app-activity-list>
+    </app-card-content>
+  </app-card>
+</div>

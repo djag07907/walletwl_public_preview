@@ -1,0 +1,256 @@
+<div class="settings-container">
+  <div class="settings-header">
+    <h1 class="settings-title">{{ translationService.t('settings.title') }}</h1>
+    <p class="settings-subtitle">{{ translationService.t('settings.subtitle') }}</p>
+  </div>
+
+  <app-tabs [tabs]="tabs" [activeTab]="activeTab" (tabChange)="onTabChange($event)">
+    <div *ngIf="activeTab === 'general'" class="tab-panel">
+      <app-card>
+        <app-card-header>
+          <div class="section-header">
+            <icon-globe size="1.25rem"></icon-globe>
+            <div>
+              <h3 class="section-title">{{ translationService.t('settings.regional_settings') }}</h3>
+              <p class="section-description">{{ translationService.t('settings.regional_settings_desc') }}</p>
+            </div>
+          </div>
+        </app-card-header>
+        <app-card-content>
+          <form [formGroup]="generalForm" class="settings-form">
+            <div class="form-grid">
+              <app-label-selector [label]="translationService.t('settings.language')" fieldId="language"
+                [options]="languageOptions" formControlName="language"></app-label-selector>
+
+              <app-label-selector [label]="translationService.t('settings.timezone')" fieldId="timezone"
+                [options]="timezoneOptions" formControlName="timezone"></app-label-selector>
+
+              <app-label-selector [label]="translationService.t('settings.currency')" fieldId="currency"
+                [options]="currencyOptions" formControlName="currency"></app-label-selector>
+
+              <app-label-selector [label]="translationService.t('settings.date_format')" fieldId="dateFormat"
+                [options]="dateFormatOptions" formControlName="dateFormat"></app-label-selector>
+            </div>
+            <div class="form-actions">
+              <app-button (clicked)="saveGeneralSettings()">
+                {{ translationService.t('settings.save_changes') }}
+              </app-button>
+            </div>
+          </form>
+        </app-card-content>
+      </app-card>
+    </div>
+
+    <div *ngIf="activeTab === 'platform'" class="tab-panel">
+      <app-card>
+        <app-card-header>
+          <div class="section-header">
+            <icon-building size="1.25rem"></icon-building>
+            <div>
+              <h3 class="section-title">{{ translationService.t('settings.platform_information') }}</h3>
+              <p class="section-description">{{ translationService.t('settings.platform_information_desc') }}</p>
+            </div>
+          </div>
+        </app-card-header>
+        <app-card-content>
+          <form [formGroup]="platformForm" class="settings-form">
+            <div class="form-grid">
+              <app-label-input [label]="translationService.t('settings.platform_name')" fieldId="platformName"
+                type="text" formControlName="platformName"></app-label-input>
+
+              <app-label-input [label]="translationService.t('settings.tax_id')" fieldId="taxId" type="text"
+                formControlName="taxId"></app-label-input>
+
+              <app-label-input [label]="translationService.t('form.email')" fieldId="email" type="email"
+                formControlName="email"></app-label-input>
+
+              <app-label-input [label]="translationService.t('settings.phone')" fieldId="phone" type="tel"
+                formControlName="phone"></app-label-input>
+            </div>
+
+            <div class="form-grid-full">
+              <app-label-textarea [label]="translationService.t('settings.address')" fieldId="address" [rows]="3"
+                formControlName="address"></app-label-textarea>
+            </div>
+
+            <div class="form-actions">
+              <app-button (clicked)="savePlatformInfo()">
+                {{ translationService.t('settings.update_platform_info') }}
+              </app-button>
+            </div>
+          </form>
+        </app-card-content>
+      </app-card>
+    </div>
+
+    <div *ngIf="activeTab === 'notifications'" class="tab-panel">
+      <app-card>
+        <app-card-header>
+          <div class="section-header">
+            <icon-bell size="1.25rem"></icon-bell>
+            <div>
+              <h3 class="section-title">{{ translationService.t('settings.notification_preferences') }}</h3>
+              <p class="section-description">{{ translationService.t('settings.notification_preferences_desc') }}</p>
+            </div>
+          </div>
+        </app-card-header>
+        <app-card-content>
+          <form [formGroup]="notificationsForm" class="settings-form">
+            <div class="notification-items">
+              <div class="notification-item">
+                <div class="notification-info">
+                  <p class="notification-label">{{ translationService.t('settings.email_notifications') }}</p>
+                  <p class="notification-description">{{ translationService.t('settings.email_notifications_desc') }}
+                  </p>
+                </div>
+                <app-switch formControlName="emailNotifications"></app-switch>
+              </div>
+
+              <div class="separator"></div>
+
+              <div class="notification-item">
+                <div class="notification-info">
+                  <p class="notification-label">{{ translationService.t('settings.push_notifications') }}</p>
+                  <p class="notification-description">{{ translationService.t('settings.push_notifications_desc') }}</p>
+                </div>
+                <app-switch formControlName="pushNotifications"></app-switch>
+              </div>
+
+              <div class="separator"></div>
+
+              <div class="notification-item">
+                <div class="notification-info">
+                  <p class="notification-label">{{ translationService.t('settings.low_stock_alerts') }}</p>
+                  <p class="notification-description">{{ translationService.t('settings.low_stock_alerts_desc') }}</p>
+                </div>
+                <app-switch formControlName="lowStockAlerts"></app-switch>
+              </div>
+
+              <div class="separator"></div>
+
+              <div class="notification-item">
+                <div class="notification-info">
+                  <p class="notification-label">{{ translationService.t('settings.route_updates') }}</p>
+                  <p class="notification-description">{{ translationService.t('settings.route_updates_desc') }}</p>
+                </div>
+                <app-switch formControlName="routeUpdates"></app-switch>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <app-button (clicked)="saveNotificationPreferences()">
+                {{ translationService.t('settings.save_preferences') }}
+              </app-button>
+            </div>
+          </form>
+        </app-card-content>
+      </app-card>
+    </div>
+
+    <div *ngIf="activeTab === 'security'" class="tab-panel">
+      <app-card>
+        <app-card-header>
+          <div class="section-header">
+            <icon-shield size="1.25rem"></icon-shield>
+            <div>
+              <h3 class="section-title">{{ translationService.t('settings.security_settings') }}</h3>
+              <p class="section-description">{{ translationService.t('settings.security_settings_desc') }}</p>
+            </div>
+          </div>
+        </app-card-header>
+        <app-card-content>
+          <form [formGroup]="securityForm" class="settings-form">
+            <div class="security-items">
+              <div class="security-item">
+                <app-label-input [label]="translationService.t('settings.session_timeout')" fieldId="sessionTimeout"
+                  type="number" formControlName="sessionTimeout"></app-label-input>
+                <p class="field-hint">{{ translationService.t('settings.session_timeout_desc') }}</p>
+              </div>
+
+              <div class="separator"></div>
+
+              <div class="security-item">
+                <app-label-selector [label]="translationService.t('settings.password_policy')" fieldId="passwordPolicy"
+                  [options]="passwordPolicyOptions" formControlName="passwordPolicy"></app-label-selector>
+              </div>
+
+              <div class="separator"></div>
+
+              <div class="notification-item">
+                <div class="notification-info">
+                  <p class="notification-label">{{ translationService.t('settings.two_factor_authentication') }}</p>
+                  <p class="notification-description">{{ translationService.t('settings.two_factor_authentication_desc')
+                    }}</p>
+                </div>
+                <app-switch formControlName="twoFactorAuth"></app-switch>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <app-button (clicked)="saveSecuritySettings()">
+                {{ translationService.t('settings.update_security_settings') }}
+              </app-button>
+            </div>
+          </form>
+        </app-card-content>
+      </app-card>
+    </div>
+
+    <div *ngIf="activeTab === 'integrations'" class="tab-panel">
+      <app-card>
+        <app-card-header>
+          <div class="section-header">
+            <icon-database size="1.25rem"></icon-database>
+            <div>
+              <h3 class="section-title">{{ translationService.t('settings.third_party_integrations') }}</h3>
+              <p class="section-description">{{ translationService.t('settings.third_party_integrations_desc') }}</p>
+            </div>
+          </div>
+        </app-card-header>
+        <app-card-content>
+          <div class="integration-items">
+            <div class="integration-item">
+              <div class="integration-info">
+                <p class="integration-label">{{ translationService.t('settings.google_maps_api') }}</p>
+                <p class="integration-description">{{ translationService.t('settings.google_maps_api_desc') }}</p>
+              </div>
+              <app-button variant="outline" (clicked)="configureIntegration('google-maps')">
+                {{ translationService.t('settings.configure') }}
+              </app-button>
+            </div>
+
+            <div class="integration-item">
+              <div class="integration-info">
+                <p class="integration-label">{{ translationService.t('settings.payment_gateway') }}</p>
+                <p class="integration-description">{{ translationService.t('settings.payment_gateway_desc') }}</p>
+              </div>
+              <app-button variant="outline" (clicked)="configureIntegration('payment')">
+                {{ translationService.t('settings.configure') }}
+              </app-button>
+            </div>
+
+            <div class="integration-item">
+              <div class="integration-info">
+                <p class="integration-label">{{ translationService.t('settings.email_service') }}</p>
+                <p class="integration-description">{{ translationService.t('settings.email_service_desc') }}</p>
+              </div>
+              <app-button variant="outline" (clicked)="configureIntegration('email')">
+                {{ translationService.t('settings.configure') }}
+              </app-button>
+            </div>
+
+            <div class="integration-item">
+              <div class="integration-info">
+                <p class="integration-label">{{ translationService.t('settings.sms_gateway') }}</p>
+                <p class="integration-description">{{ translationService.t('settings.sms_gateway_desc') }}</p>
+              </div>
+              <app-button variant="outline" (clicked)="configureIntegration('sms')">
+                {{ translationService.t('settings.configure') }}
+              </app-button>
+            </div>
+          </div>
+        </app-card-content>
+      </app-card>
+    </div>
+  </app-tabs>
+</div>

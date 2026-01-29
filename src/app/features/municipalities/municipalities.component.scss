@@ -1,0 +1,244 @@
+.municipalities-container {
+  width: 100%;
+  min-height: 100%;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+
+  @media (max-width: 768px) {
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  @media (max-width: 480px) {
+    padding: 0.75rem;
+  }
+}
+
+* {
+  font-family: var(--font-family-primary, "Poppins", sans-serif);
+}
+
+.municipalities-header {
+  .header-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    @media (min-width: 640px) {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+
+  .header-text {
+    flex: 1;
+  }
+
+  ::ng-deep .add-btn {
+    width: 100%;
+
+    @media (min-width: 640px) {
+      width: auto;
+    }
+  }
+}
+
+.municipalities-title {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: var(--text-color, #1a1a1a);
+  margin: 0;
+
+  @media (min-width: 640px) {
+    font-size: 2.25rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 1.5rem;
+  }
+}
+
+.municipalities-subtitle {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 0.25rem 0 0 0;
+
+  @media (min-width: 640px) {
+    font-size: 1rem;
+  }
+}
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+
+  @media (min-width: 640px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.table-filters {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  @media (min-width: 640px) {
+    flex-direction: row;
+  }
+}
+
+.search-wrapper {
+  position: relative;
+  flex: 1;
+
+  .search-icon {
+    position: absolute;
+    left: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6b7280;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  ::ng-deep .search-input input {
+    padding-left: 2.5rem;
+  }
+}
+
+.filter-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-direction: column;
+
+  @media (min-width: 640px) {
+    flex-direction: row;
+  }
+
+  app-select {
+    width: 100%;
+
+    @media (min-width: 640px) {
+      width: 140px;
+    }
+  }
+
+  ::ng-deep .export-btn {
+    width: 100%;
+
+    @media (min-width: 640px) {
+      width: auto;
+    }
+  }
+}
+
+::ng-deep .table-content {
+  padding: 0 !important;
+
+  .table-container {
+    border-top: 1px solid #e5e7eb;
+  }
+}
+
+.municipality-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+
+  .municipality-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.5rem;
+    background: var(--primary-color-light, #dbeafe);
+    color: var(--primary-color, #3b82f6);
+    flex-shrink: 0;
+  }
+
+  .municipality-details {
+    min-width: 0;
+    flex: 1;
+
+    .municipality-name {
+      font-weight: 500;
+      color: var(--text-color, #1a1a1a);
+      margin: 0;
+      font-size: 0.875rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .municipality-tax-id {
+      font-size: 0.75rem;
+      color: #6b7280;
+      margin: 0.125rem 0 0 0;
+    }
+  }
+}
+
+.contact-info,
+.location-info {
+  .contact-email,
+  .location-city {
+    font-size: 0.875rem;
+    color: var(--text-color, #1a1a1a);
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .contact-phone,
+  .location-country {
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin: 0.125rem 0 0 0;
+  }
+}
+
+.count-value,
+.revenue-value {
+  font-weight: 500;
+  color: var(--text-color, #1a1a1a);
+  font-size: 0.875rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+@media print {
+  .municipalities-container {
+    padding: 0;
+  }
+
+  .municipalities-header,
+  .filter-actions {
+    display: none;
+  }
+
+  .stats-grid {
+    display: block;
+
+    app-card {
+      break-inside: avoid;
+      page-break-inside: avoid;
+      margin-bottom: 1rem;
+    }
+  }
+}

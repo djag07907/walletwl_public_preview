@@ -1,0 +1,151 @@
+<div class="manual-recharge-container">
+    <div class="page-header">
+        <h1 class="page-title">{{ translationService.t('manual_recharge.title') }}</h1>
+        <p class="page-subtitle">{{ translationService.t('manual_recharge.subtitle') }}</p>
+    </div>
+
+    <div class="demo-alert">
+        <div class="alert-icon">
+            <icon-alert-triangle size="1.5rem" color="#92400e"></icon-alert-triangle>
+        </div>
+        <div class="alert-content">
+            <h4 class="alert-title">{{ translationService.t('manual_recharge.dev_tool_title') }}</h4>
+            <p class="alert-desc">
+                {{ translationService.t('manual_recharge.dev_tool_desc') }}
+            </p>
+        </div>
+        <button class="doc-btn">
+            {{ translationService.t('manual_recharge.view_docs') }}
+            <icon-external-link size="1rem"></icon-external-link>
+        </button>
+    </div>
+
+    <app-card class="adjustment-card">
+        <app-card-header>
+            <div class="card-header-content">
+                <h3 class="card-title">{{ translationService.t('manual_recharge.transaction_details') }}</h3>
+                <p class="card-subtitle">{{ translationService.t('manual_recharge.transaction_desc') }}</p>
+            </div>
+        </app-card-header>
+
+        <app-card-content>
+            <div class="form-container">
+                <div class="form-group">
+                    <label class="form-label">{{ translationService.t('manual_recharge.select_account') }}</label>
+                    <div class="search-wrapper">
+                        <div class="search-input-container">
+                            <icon-users size="1.125rem" color="#94a3b8" class="search-icon"></icon-users>
+                            <input type="text" [ngModel]="searchQuery()" (ngModelChange)="onSearchChange($event)"
+                                [placeholder]="translationService.t('manual_recharge.search_placeholder')"
+                                class="search-input">
+                            <i class="pi pi-chevron-down dropdown-arrow"></i>
+                        </div>
+
+                        <div class="search-results-dropdown" *ngIf="showSearchResults() && searchResults().length > 0">
+                            <div *ngFor="let wallet of searchResults()" class="result-item"
+                                (click)="selectWallet(wallet)">
+                                <div class="wallet-icon-bg">
+                                    <icon-database size="1rem" color="#64748b"></icon-database>
+                                </div>
+                                <div class="item-info">
+                                    <span class="item-id">{{ wallet.accountId }}</span>
+                                    <span class="item-owner">{{ translationService.t(wallet.ownerName) }} ({{
+                                        translationService.t(wallet.ownerEmail) }})</span>
+                                </div>
+                                <span class="item-balance">Q. {{ wallet.currentBalance | number:'1.2-2' }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group type-group">
+                        <label class="form-label">{{ translationService.t('manual_recharge.adjustment_type') }}</label>
+                        <div class="toggle-buttons">
+                            <button [class.active]="adjustmentType() === 'ADD'" (click)="setAdjustmentType('ADD')"
+                                class="toggle-btn add-btn">
+                                <icon-plus size="1rem"></icon-plus>
+                                {{ translationService.t('manual_recharge.add_funds') }}
+                            </button>
+                            <button [class.active]="adjustmentType() === 'SUBTRACT'"
+                                (click)="setAdjustmentType('SUBTRACT')" class="toggle-btn subtract-btn">
+                                <icon-minus size="1rem"></icon-minus>
+                                {{ translationService.t('manual_recharge.subtract') }}
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-group amount-group">
+                        <label class="form-label">{{ translationService.t('manual_recharge.amount_label') }}</label>
+                        <div class="amount-input-wrapper">
+                            <span class="currency-symbol">Q.</span>
+                            <input type="number" [(ngModel)]="amount" placeholder="0.00" class="amount-input">
+                        </div>
+                        <p class="current-balance" *ngIf="selectedWallet() as wallet">
+                            {{ translationService.t('manual_recharge.current_balance') }}: Q. {{ wallet.currentBalance |
+                            number:'1.2-2' }}
+                        </p>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">{{ translationService.t('manual_recharge.reason_label') }}</label>
+                    <textarea [(ngModel)]="reason"
+                        [placeholder]="translationService.t('manual_recharge.reason_placeholder')"
+                        class="reason-textarea"></textarea>
+                    <p class="mandatory-hint">{{ translationService.t('manual_recharge.mandatory_hint') }}</p>
+                </div>
+
+                <div class="form-divider"></div>
+
+                <div class="form-actions">
+                    <button class="clear-btn" (click)="clearForm()">{{
+                        translationService.t('manual_recharge.clear_form') }}</button>
+                    <button class="apply-btn" [disabled]="!selectedWallet() || !amount() || amount()! <= 0 || !reason()"
+                        (click)="applyAdjustment()">
+                        <icon-check-circle size="1.125rem" color="#fff"></icon-check-circle>
+                        {{ translationService.t('manual_recharge.apply_adjustment') }}
+                    </button>
+                </div>
+            </div>
+        </app-card-content>
+    </app-card>
+
+    <div class="history-section">
+        <div class="section-header">
+            <h2 class="section-title">{{ translationService.t('manual_recharge.recent_adjustments') }}</h2>
+            <a href="#" class="view-all-link" (click)="$event.preventDefault()">{{
+                translationService.t('manual_recharge.view_all_logs') }}</a>
+        </div>
+
+        <div class="history-table-card">
+            <app-table [columns]="columns" [data]="adjustments()">
+                <ng-template appTableCell="walletAccountId" let-row>
+                    <span class="wallet-id-value">{{ row.walletAccountId }}</span>
+                </ng-template>
+
+                <ng-template appTableCell="type" let-row>
+                    <span class="type-badge" [class]="row.type.toLowerCase()">
+                        {{ translationService.t('manual_recharge.' + (row.type === 'ADD' ? 'add_funds' : 'subtract')) }}
+                    </span>
+                </ng-template>
+
+                <ng-template appTableCell="amount" let-row>
+                    <span class="amount-value" [class]="row.type.toLowerCase()">
+                        {{ row.type === 'ADD' ? '+' : '-' }}Q. {{ row.amount | number:'1.2-2' }}
+                    </span>
+                </ng-template>
+                <ng-template appTableCell="operator" let-row>
+                    <span class="text-sm text-gray-900">{{ row.operator }}</span>
+                </ng-template>
+                <ng-template appTableCell="date" let-row>
+                    <span class="text-sm text-gray-900">{{ row.createdAt | date:'dd/MM/yyyy HH:mm:ss' }}</span>
+                </ng-template>
+            </app-table>
+        </div>
+    </div>
+
+    <app-manual-recharge-status-dialog [isVisible]="isStatusVisible()" [type]="statusType()"
+        [adjustment]="lastAppliedAdjustment()" (onClose)="closeStatusDialog()"
+        (onViewHistory)="scrollToHistory()"></app-manual-recharge-status-dialog>
+</div>

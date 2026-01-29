@@ -1,0 +1,101 @@
+<div class="billing-records-container">
+  <div class="billing-records-header">
+    <div class="header-content">
+      <div class="header-text">
+        <h1 class="billing-records-title">{{ translationService.t('billing_records.title') }}</h1>
+        <p class="billing-records-subtitle">{{ translationService.t('billing_records.subtitle') }}</p>
+      </div>
+      <div class="header-actions">
+        <app-button variant="outline" (clicked)="onBatchUpload()" customClass="batch-upload-btn">
+          {{ translationService.t('billing_records.batch_upload') }}
+        </app-button>
+        <app-button (clicked)="onAddBillingRecord()" customClass="add-btn">
+          {{ translationService.t('billing_records.add_billing_record') }}
+        </app-button>
+      </div>
+    </div>
+  </div>
+
+  <div class="kpi-grid">
+    <app-kpi-card [data]="kpis()[0]">
+      <icon-building size="1.25rem" icon></icon-building>
+      <icon-trending-up size="1rem" trendIcon *ngIf="kpis()[0].trend === 'up'"></icon-trending-up>
+      <icon-trending-down size="1rem" trendIcon *ngIf="kpis()[0].trend === 'down'"></icon-trending-down>
+    </app-kpi-card>
+
+    <app-kpi-card [data]="kpis()[1]">
+      <icon-dollar size="1.25rem" icon></icon-dollar>
+      <icon-trending-up size="1rem" trendIcon *ngIf="kpis()[1].trend === 'up'"></icon-trending-up>
+      <icon-trending-down size="1rem" trendIcon *ngIf="kpis()[1].trend === 'down'"></icon-trending-down>
+    </app-kpi-card>
+
+    <app-kpi-card [data]="kpis()[2]">
+      <icon-users size="1.25rem" icon></icon-users>
+      <icon-trending-up size="1rem" trendIcon *ngIf="kpis()[2].trend === 'up'"></icon-trending-up>
+      <icon-trending-down size="1rem" trendIcon *ngIf="kpis()[2].trend === 'down'"></icon-trending-down>
+    </app-kpi-card>
+  </div>
+
+  <app-card>
+    <app-card-header>
+      <div class="table-filters">
+        <div class="search-wrapper">
+          <icon-search size="1rem" class="search-icon"></icon-search>
+          <app-input [placeholder]="translationService.t('billing_records.search_placeholder')"
+            (valueChange)="onSearchChange($event)" customClass="search-input"></app-input>
+        </div>
+        <div class="filter-actions">
+          <app-select [options]="statusOptions" [value]="statusFilter()"
+            (valueChange)="onStatusFilterChange($event)"></app-select>
+          <app-button variant="outline" (clicked)="onExport()" customClass="export-btn">
+            <icon-download size="1rem"></icon-download>
+            {{ translationService.t('billing_records.export') }}
+          </app-button>
+        </div>
+      </div>
+    </app-card-header>
+    <app-card-content customClass="table-content">
+      <app-table [columns]="tableColumns" [data]="paginatedBillingRecords()"
+        [emptyMessage]="translationService.t('billing_records.no_billing_records_found')">
+        <ng-template appTableCell="billing_record" let-billingRecord>
+          <div class="billing-record-info">
+            <div class="billing-record-icon">
+              <icon-building size="1.25rem"></icon-building>
+            </div>
+            <p class="billing-record-name">{{ billingRecord.recordId }}</p>
+          </div>
+        </ng-template>
+        <ng-template appTableCell="wallet_citizen" let-billingRecord>
+          <div class="billing-record-info">
+            <div class="billing-record-details">
+              <p class="billing-record-name">{{ billingRecord.citizenName }}</p>
+              <p class="billing-record-tax-id">{{ billingRecord.accountId }}</p>
+            </div>
+          </div>
+        </ng-template>
+        <ng-template appTableCell="chargeType" let-billingRecord>
+          <p class="text-sm text-gray-500">{{ translationService.t(billingRecord.chargeType) }}</p>
+        </ng-template>
+        <ng-template appTableCell="assignedCollectors" let-billingRecord>
+          <p class="text-sm text-gray-900">{{ billingRecord.assignedCollectors.join(', ') }}</p>
+        </ng-template>
+        <ng-template appTableCell="amount" let-billingRecord>
+          <span class="revenue-value">Q. {{ getBillingRecordAmountFormatted(billingRecord.amount)
+            }}</span>
+        </ng-template>
+        <ng-template appTableCell="status" let-billingRecord>
+          <app-badge [variant]="getBadgeVariant(billingRecord.status)">
+            {{ translationService.t('billing_records.' + billingRecord.status) }}
+          </app-badge>
+        </ng-template>
+        <ng-template appTableCell="actions" let-billingRecord>
+          <app-billing-records-menu-options [billingRecordId]="billingRecord.id"
+            (actionSelected)="onBillingRecordAction($event)"></app-billing-records-menu-options>
+        </ng-template>
+      </app-table>
+      <app-table-pagination *ngIf="filteredBillingRecords().length > 0" [currentPage]="currentPage()"
+        [totalPages]="totalPages" [totalItems]="filteredBillingRecords().length" [itemsPerPage]="itemsPerPage()"
+        (pageChange)="onPageChange($event)"></app-table-pagination>
+    </app-card-content>
+  </app-card>
+</div>

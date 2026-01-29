@@ -1,0 +1,97 @@
+<div class="collectors-container">
+    <div class="collectors-header">
+        <div class="header-content">
+            <div class="header-text">
+                <h1 class="collectors-title">{{ translationService.t('collectors.title') }}</h1>
+                <p class="collectors-subtitle">{{ translationService.t('collectors.subtitle') }}</p>
+            </div>
+            <app-button (clicked)="onAddCollector()" customClass="add-btn">
+                {{ translationService.t('collectors.add_collector') }}
+            </app-button>
+        </div>
+    </div>
+
+    <div class="kpi-grid">
+        <app-kpi-card [data]="kpis[0]">
+            <icon-building size="1.25rem" icon></icon-building>
+            <icon-trending-up size="1rem" trendIcon *ngIf="kpis[0].trend === 'up'"></icon-trending-up>
+            <icon-trending-down size="1rem" trendIcon *ngIf="kpis[0].trend === 'down'"></icon-trending-down>
+        </app-kpi-card>
+
+        <app-kpi-card [data]="kpis[1]">
+            <icon-users size="1.25rem" icon></icon-users>
+            <icon-trending-up size="1rem" trendIcon *ngIf="kpis[1].trend === 'up'"></icon-trending-up>
+            <icon-trending-down size="1rem" trendIcon *ngIf="kpis[1].trend === 'down'"></icon-trending-down>
+        </app-kpi-card>
+
+        <app-kpi-card [data]="kpis[2]">
+            <icon-users size="1.25rem" icon></icon-users>
+            <icon-trending-up size="1rem" trendIcon *ngIf="kpis[2].trend === 'up'"></icon-trending-up>
+            <icon-trending-down size="1rem" trendIcon *ngIf="kpis[2].trend === 'down'"></icon-trending-down>
+        </app-kpi-card>
+    </div>
+
+    <app-card>
+        <app-card-header>
+            <div class="table-filters">
+                <div class="search-wrapper">
+                    <icon-search size="1rem" class="search-icon"></icon-search>
+                    <app-input [placeholder]="translationService.t('collectors.search_placeholder')"
+                        (valueChange)="onSearchChange($event)" customClass="search-input"></app-input>
+                </div>
+                <div class="filter-actions">
+                    <app-select [options]="statusOptions" [value]="statusFilter"
+                        (valueChange)="onStatusFilterChange($event)"></app-select>
+                    <app-button variant="outline" (clicked)="onExport()" customClass="export-btn">
+                        <icon-download size="1rem"></icon-download>
+                        {{ translationService.t('collectors.export') }}
+                    </app-button>
+                </div>
+            </div>
+        </app-card-header>
+        <app-card-content customClass="table-content">
+            <app-table [columns]="tableColumns" [data]="paginatedCollectors"
+                [emptyMessage]="translationService.t('collectors.no_collectors_found')">
+                <ng-template appTableCell="collector" let-collector>
+                    <div class="collector-info">
+                        <div class="collector-icon">
+                            <icon-building size="1.25rem"></icon-building>
+                        </div>
+                        <div class="collector-details">
+                            <p class="collector-name">{{ collector.name }}</p>
+                            <p class="collector-tax-id">{{ collector.id }}</p>
+                        </div>
+                    </div>
+                </ng-template>
+                <ng-template appTableCell="contact" let-collector>
+                    <div class="contact-details">
+                        <p class="text-sm text-gray-900">{{ collector.email }}</p>
+                        <p class="text-sm text-gray-500">{{ collector.phone }}</p>
+                    </div>
+                </ng-template>
+                <ng-template appTableCell="assignedMunicipalities" let-collector>
+                    <div class="municipalities-list">
+                        <p class="text-sm text-gray-900" *ngFor="let muni of collector.assignedMunicipalities">
+                            {{ muni }}
+                        </p>
+                    </div>
+                </ng-template>
+                <ng-template appTableCell="role" let-collector>
+                    <p class="text-sm text-gray-900 capitalize">{{ collector.role }}</p>
+                </ng-template>
+                <ng-template appTableCell="status" let-collector>
+                    <app-badge [variant]="getBadgeVariant(collector.status)">
+                        {{ translationService.t('collectors.' + collector.status) }}
+                    </app-badge>
+                </ng-template>
+                <ng-template appTableCell="actions" let-collector>
+                    <app-collectors-menu-options [id]="collector.id"
+                        (actionSelected)="onCollectorAction($event)"></app-collectors-menu-options>
+                </ng-template>
+            </app-table>
+            <app-table-pagination *ngIf="filteredCollectors.length > 0" [currentPage]="currentPage"
+                [totalPages]="totalPages" [totalItems]="filteredCollectors.length" [itemsPerPage]="itemsPerPage"
+                (pageChange)="onPageChange($event)"></app-table-pagination>
+        </app-card-content>
+    </app-card>
+</div>

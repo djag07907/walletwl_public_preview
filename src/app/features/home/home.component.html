@@ -1,0 +1,16 @@
+<div class="home-layout" [class.mobile-menu-open]="isMobileMenuOpen" [class.collapsed]="isCollapsed">
+    <div class="mobile-overlay" *ngIf="(isMobile || isTablet) && isMobileMenuOpen" (click)="closeMobileMenu()"></div>
+
+    <app-left-menu [isMobile]="isMobile" [isTablet]="isTablet" [isDesktop]="isDesktop"
+        [isMobileMenuOpen]="isMobileMenuOpen" [isCollapsed]="isCollapsed" (menuItemClick)="onMenuItemClick()"
+        (closeMobileMenu)="closeMobileMenu()"></app-left-menu>
+
+    <div class="main-content">
+        <app-top-bar [isMobile]="isMobile" [isTablet]="isTablet" [isDesktop]="isDesktop" [isCollapsed]="isCollapsed"
+            (toggleMenu)="toggleMobileMenu()" (toggleCollapse)="toggleCollapse()"></app-top-bar>
+
+        <div class="content-area">
+            <router-outlet></router-outlet>
+        </div>
+    </div>
+</div>

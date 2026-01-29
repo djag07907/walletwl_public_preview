@@ -1,0 +1,11 @@
+{
+  "/api": {
+    "target": "https://routecommerce-dev.tecnologiatransaccional.com",
+    "secure": true,
+    "changeOrigin": true,
+    "logLevel": "debug",
+    "pathRewrite": {
+      "^/api": ""
+    }
+  }
+}

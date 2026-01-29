@@ -1,0 +1,162 @@
+<div class="batch-preview-container" *ngIf="summary() as summaryData">
+    <div class="preview-header">
+        <div class="header-left">
+            <h1 class="preview-title">Batch Upload Data Preview</h1>
+            <p class="filename-display">
+                <icon-file-text size="1rem" color="#64748b"></icon-file-text>
+                {{ summaryData.filename }}
+            </p>
+        </div>
+        <app-button variant="outline" size="sm">Help Guide</app-button>
+    </div>
+
+    <div class="kpi-cards">
+        <app-batch-kpi-card label="Total Records" [value]="(summaryData.totalRecords | number) ?? ''"
+            footerText="{{ summaryData.extractionPercentage }}% Extracted" footerClass="success" type="total">
+            <icon-chart-bar icon size="1rem" color="#3b82f6"></icon-chart-bar>
+            <icon-check-circle footerIcon size="0.875rem"></icon-check-circle>
+        </app-batch-kpi-card>
+
+        <app-batch-kpi-card label="Valid Records" [value]="(summaryData.validRecordsCount | number) ?? ''"
+            footerText="{{ summaryData.readyPercentage | number:'1.1-1' }}% Ready to process" footerClass="success"
+            type="valid">
+            <icon-check-circle icon size="1rem" color="#10b981"></icon-check-circle>
+        </app-batch-kpi-card>
+
+        <app-batch-kpi-card label="Potential Errors" [value]="summaryData.errorRecordsCount"
+            footerText="{{ summaryData.errorPercentage | number:'1.1-1' }}% Action required" footerClass="danger"
+            type="error">
+            <icon-alert-triangle icon size="1rem" color="#ef4444"></icon-alert-triangle>
+        </app-batch-kpi-card>
+    </div>
+
+    <div class="data-preview-section">
+        <div class="section-header">
+            <h2 class="section-title">Extracted Data Preview</h2>
+            <div class="filter-actions">
+                <button [class.active]="filterMode() === 'all'" (click)="setFilter('all')">FILTER: ALL RECORDS</button>
+                <button [class.active]="filterMode() === 'errors'" (click)="setFilter('errors')"
+                    class="error-filter">FILTER: ERRORS ONLY</button>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table class="preview-table">
+                <thead>
+                    <tr>
+                        <th>DPI / ID NUMBER</th>
+                        <th>CONCEPTO</th>
+                        <th>TIPO</th>
+                        <th>VALOR</th>
+                        <th>IVA (12%)</th>
+                        <th>TOTAL</th>
+                        <th>VENCIMIENTO</th>
+                        <th>STATUS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let record of paginatedRecords()" [class.row-error]="record.status !== 'valid'">
+                        <td>
+                            <div class="dpi-cell">
+                                <span [class.error-text]="record.status === 'invalid_dpi'">{{ formatDPI(record.dpi)
+                                    }}</span>
+                                <icon-alert-triangle *ngIf="record.status === 'invalid_dpi'" color="#ef4444"
+                                    size="0.875rem"></icon-alert-triangle>
+                            </div>
+                        </td>
+                        <td>{{ record.concepto }}</td>
+                        <td>{{ record.tipo }}</td>
+                        <td>
+                            <span *ngIf="record.valor > 0">Q. {{ record.valor | number:'1.2-2' }}</span>
+                            <span *ngIf="record.valor === 0" class="missing-text">MISSING</span>
+                        </td>
+                        <td>Q. {{ record.iva | number:'1.2-2' }}</td>
+                        <td>
+                            <span class="total-value" [class.highlight]="record.status === 'valid'">Q. {{ record.total |
+                                number:'1.2-2' }}</span>
+                        </td>
+                        <td>{{ record.vencimiento }}</td>
+                        <td class="status-cell">
+                            <div class="status-wrapper">
+                                <span class="status-badge" [class.valid]="record.status === 'valid'"
+                                    [class.invalid]="record.status !== 'valid'">
+                                    {{ getStatusLabel(record.status) }}
+                                </span>
+
+                                <div class="error-popover"
+                                    *ngIf="record.status !== 'valid' && record.errors.length > 0">
+                                    <div class="popover-header">
+                                        <icon-alert-triangle color="#ef4444" size="0.875rem"></icon-alert-triangle>
+                                        <span class="popover-title">Validation Details</span>
+                                    </div>
+                                    <ul class="popover-errors">
+                                        <li *ngFor="let error of record.errors">{{ error }}</li>
+                                    </ul>
+                                    <div class="popover-arrow"></div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="pagination-footer">
+            <span class="pagination-info">
+                Showing {{ currentPage() * pageSize() + 1 }} to {{ Math.min((currentPage() + 1) * pageSize(),
+                filteredRecords().length) }} of {{ filteredRecords().length }} records
+            </span>
+            <div class="pagination-controls">
+                <button class="page-btn" (click)="prevPage()" [disabled]="currentPage() === 0">
+                    <icon-arrow-left size="0.75rem"></icon-arrow-left>
+                </button>
+
+                <ng-container *ngFor="let i of pagesArray()">
+                    <button
+                        *ngIf="i < 3 || i === totalPages() - 1 || (i >= currentPage() - 2 && i <= currentPage() + 2)"
+                        class="page-btn" [class.active]="currentPage() === i" (click)="goToPage(i)">
+                        {{ i + 1 }}
+                    </button>
+                    <span class="dots" *ngIf="i === 1 && totalPages() > 5 && currentPage() > 2">...</span>
+                </ng-container>
+
+                <button class="page-btn" (click)="nextPage()" [disabled]="currentPage() >= totalPages() - 1">
+                    <icon-arrow-right size="0.75rem"></icon-arrow-right>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="ready-footer">
+        <div class="footer-alert">
+            <div class="alert-icon">
+                <icon-info-circle color="#3b82f6" size="1.25rem"></icon-info-circle>
+            </div>
+            <div class="alert-content">
+                <h4 class="alert-title">Ready to proceed?</h4>
+                <p class="alert-desc">{{ summaryData.errorRecordsCount }} records will be skipped due to errors if you
+                    confirm now.</p>
+            </div>
+        </div>
+        <div class="footer-buttons">
+            <app-button variant="outline" (clicked)="onDiscard()" customClass="discard-btn">
+                <icon-trash size="1rem"></icon-trash>
+                Discard & Re-upload
+            </app-button>
+            <app-button (clicked)="onConfirm()" customClass="confirm-btn">
+                <icon-check-circle size="1rem" color="#fff"></icon-check-circle>
+                Confirm & Process Batch
+            </app-button>
+        </div>
+    </div>
+
+    <app-batch-processing-dialog [isVisible]="isProcessing()" [totalRecords]="summaryData.validRecordsCount"
+        [batchId]="batchId()" (onComplete)="handleProcessingComplete()">
+    </app-batch-processing-dialog>
+
+    <app-batch-upload-success-dialog [isVisible]="isSuccessView()" [filename]="summaryData.filename"
+        [successCount]="summaryData.validRecordsCount" [failureCount]="summaryData.errorRecordsCount"
+        [batchId]="batchId()" [processedAt]="processedAt()" (onViewRecords)="onSuccessViewClose()"
+        (onNewUpload)="onPerformAnotherUpload()">
+    </app-batch-upload-success-dialog>
+</div>

@@ -1,0 +1,144 @@
+.home-layout {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  position: relative;
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+}
+
+.mobile-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  backdrop-filter: blur(2px);
+  transition: opacity 0.3s ease;
+
+  @media (min-width: 1025px) {
+    display: none !important;
+  }
+}
+
+.main-content {
+  & {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+    margin-left: 280px;
+    transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1001; /* Higher than sidebar (1000) */
+  }
+
+  @media (min-width: 1025px) {
+    .home-layout.collapsed & {
+      margin-left: 64px;
+    }
+  }
+
+  @media (min-width: 769px) and (max-width: 1024px) {
+    margin-left: 0;
+  }
+
+  @media (max-width: 768px) {
+    margin-left: 0;
+    width: 100%;
+  }
+}
+
+.content-area {
+  & {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background-color: #f8f9fa;
+    scroll-behavior: smooth;
+    position: relative;
+    margin-top: 50px;
+    padding: 2rem;
+    -webkit-overflow-scrolling: touch;
+    /* Removed transform: translateZ(0) to allow fixed-position children (dialogs) to be relative to viewport */
+  }
+
+  @media (min-width: 769px) and (max-width: 1024px) {
+    padding: 1.5rem;
+    margin-top: 75px;
+  }
+
+  @media (max-width: 768px) {
+    padding: 1rem;
+    margin-top: 70px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 0.75rem;
+    margin-top: 65px;
+  }
+}
+
+.content-area.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+
+  &::before {
+    content: "Cargando...";
+    font-size: 1.1rem;
+    color: #666;
+
+    @media (max-width: 768px) {
+      font-size: 1rem;
+    }
+  }
+}
+
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .home-layout {
+    /* transform: translateZ(0); - Removed to avoid creating a viewport-relative stacking context that clips global dialogs */
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-layout,
+  .main-content,
+  .mobile-overlay {
+    transition: none;
+  }
+
+  .content-area {
+    scroll-behavior: auto;
+  }
+}
+
+@media print {
+  .home-layout {
+    height: auto;
+    overflow: visible;
+  }
+
+  .mobile-overlay {
+    display: none;
+  }
+
+  .main-content {
+    margin-left: 0;
+  }
+
+  .content-area {
+    margin-top: 0;
+    padding: 0;
+    overflow: visible;
+  }
+}

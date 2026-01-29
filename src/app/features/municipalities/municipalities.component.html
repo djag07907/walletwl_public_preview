@@ -1,0 +1,95 @@
+<div class="municipalities-container">
+    <div class="municipalities-header">
+        <div class="header-content">
+            <div class="header-text">
+                <h1 class="municipalities-title">{{ translationService.t('municipalities.title') }}</h1>
+                <p class="municipalities-subtitle">{{ translationService.t('municipalities.subtitle') }}</p>
+            </div>
+            <app-button (clicked)="onAddMunicipality()" customClass="add-btn">
+                {{ translationService.t('municipalities.add_municipality') }}
+            </app-button>
+        </div>
+    </div>
+
+    <div class="kpi-grid">
+        <app-kpi-card [data]="kpis[0]">
+            <icon-building size="1.25rem" icon></icon-building>
+            <icon-trending-up size="1rem" trendIcon *ngIf="kpis[0].trend === 'up'"></icon-trending-up>
+            <icon-trending-down size="1rem" trendIcon *ngIf="kpis[0].trend === 'down'"></icon-trending-down>
+        </app-kpi-card>
+
+        <app-kpi-card [data]="kpis[1]">
+            <icon-users size="1.25rem" icon></icon-users>
+            <icon-trending-up size="1rem" trendIcon *ngIf="kpis[1].trend === 'up'"></icon-trending-up>
+            <icon-trending-down size="1rem" trendIcon *ngIf="kpis[1].trend === 'down'"></icon-trending-down>
+        </app-kpi-card>
+
+        <app-kpi-card [data]="kpis[2]">
+            <icon-users size="1.25rem" icon></icon-users>
+            <icon-trending-up size="1rem" trendIcon *ngIf="kpis[2].trend === 'up'"></icon-trending-up>
+            <icon-trending-down size="1rem" trendIcon *ngIf="kpis[2].trend === 'down'"></icon-trending-down>
+        </app-kpi-card>
+    </div>
+
+    <app-card>
+        <app-card-header>
+            <div class="table-filters">
+                <div class="search-wrapper">
+                    <icon-search size="1rem" class="search-icon"></icon-search>
+                    <app-input [placeholder]="translationService.t('municipalities.search_placeholder')"
+                        (valueChange)="onSearchChange($event)" customClass="search-input"></app-input>
+                </div>
+                <div class="filter-actions">
+                    <app-select [options]="statusOptions" [value]="statusFilter"
+                        (valueChange)="onStatusFilterChange($event)"></app-select>
+                    <app-button variant="outline" (clicked)="onExport()" customClass="export-btn">
+                        <icon-download size="1rem"></icon-download>
+                        {{ translationService.t('municipalities.export') }}
+                    </app-button>
+                </div>
+            </div>
+        </app-card-header>
+        <app-card-content customClass="table-content">
+            <app-table [columns]="tableColumns" [data]="paginatedMunicipalities"
+                [emptyMessage]="translationService.t('municipalities.no_municipalities_found')">
+                <ng-template appTableCell="municipality" let-municipality>
+                    <div class="municipality-info">
+                        <div class="municipality-icon">
+                            <icon-building size="1.25rem"></icon-building>
+                        </div>
+                        <div class="municipality-details">
+                            <p class="municipality-name">{{ municipality.municipalityName }}</p>
+                            <p class="municipality-tax-id">{{ municipality.id }}</p>
+                        </div>
+                    </div>
+                </ng-template>
+                <ng-template appTableCell="region" let-municipality>
+                    <div class="contact-details">
+                        <p class="text-sm text-gray-900">{{ municipality.region }}</p>
+                    </div>
+                </ng-template>
+                <ng-template appTableCell="contact" let-municipality>
+                    <div class="contact-info">
+                        <p class="text-sm font-medium text-gray-900">{{ municipality.contactPerson }}</p>
+                        <p class="text-xs text-gray-500">{{ municipality.contactEmail }}</p>
+                    </div>
+                </ng-template>
+                <ng-template appTableCell="taxId" let-municipality>
+                    <p class="text-sm text-gray-900 capitalize">{{ municipality.taxId }}</p>
+                </ng-template>
+                <ng-template appTableCell="status" let-municipality>
+                    <app-badge [variant]="getBadgeVariant(municipality.status)">
+                        {{ translationService.t('municipalities.' + municipality.status) }}
+                    </app-badge>
+                </ng-template>
+                <ng-template appTableCell="actions" let-municipality>
+                    <app-municipalities-menu-options [id]="municipality.id"
+                        (actionSelected)="onMunicipalityAction($event)"></app-municipalities-menu-options>
+                </ng-template>
+            </app-table>
+            <app-table-pagination *ngIf="filteredMunicipalities.length > 0" [currentPage]="currentPage"
+                [totalPages]="totalPages" [totalItems]="filteredMunicipalities.length" [itemsPerPage]="itemsPerPage"
+                (pageChange)="onPageChange($event)"></app-table-pagination>
+        </app-card-content>
+    </app-card>
+</div>

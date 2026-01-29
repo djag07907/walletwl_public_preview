@@ -1,0 +1,9 @@
+<p-toast></p-toast>
+<app-language-switcher></app-language-switcher>
+
+<div class="min-h-screen flex">
+  <app-login-hero></app-login-hero>
+  <app-login-form [isLoading$]="isLoading$" [error$]="error$" (loginSubmit)="onLoginSubmit($event)"
+    (forgotPassword)="onForgotPassword()">
+  </app-login-form>
+</div>

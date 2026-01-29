@@ -1,0 +1,39 @@
+:host {
+  display: block;
+  min-height: 100vh;
+}
+
+.min-h-screen {
+  min-height: 100vh;
+}
+
+.flex {
+  display: flex;
+}
+
+// Global PrimeNG overrides for login components
+::ng-deep {
+  .p-toast {
+    z-index: 9999;
+  }
+
+  app-login-hero,
+  app-login-form {
+    display: block;
+  }
+}
+
+@media (max-width: 1023px) {
+  .flex {
+    flex-direction: column;
+  }
+
+  app-login-form {
+    flex: none;
+    width: 100%;
+  }
+
+  app-login-hero {
+    display: none !important;
+  }
+}

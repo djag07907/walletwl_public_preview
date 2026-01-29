@@ -1,0 +1,116 @@
+<div class="users-container">
+  <div class="users-header">
+    <div class="header-content">
+      <div class="header-text">
+        <h1 class="users-title">{{ translationService.t('users.title') }}</h1>
+        <p class="users-subtitle">{{ translationService.t('users.subtitle') }}</p>
+      </div>
+      <app-button (clicked)="onAddUser()" customClass="add-btn">
+        {{ translationService.t('users.add_user') }}
+      </app-button>
+    </div>
+  </div>
+
+  <div class="kpi-grid">
+    <app-kpi-card [data]="kpis()[0]">
+      <icon-users size="1.25rem" icon></icon-users>
+      <icon-trending-up size="1rem" trendIcon *ngIf="kpis()[0].trend === 'up'"></icon-trending-up>
+      <icon-trending-down size="1rem" trendIcon *ngIf="kpis()[0].trend === 'down'"></icon-trending-down>
+    </app-kpi-card>
+
+    <app-kpi-card [data]="kpis()[1]">
+      <icon-users size="1.25rem" icon></icon-users>
+      <icon-trending-up size="1rem" trendIcon *ngIf="kpis()[1].trend === 'up'"></icon-trending-up>
+      <icon-trending-down size="1rem" trendIcon *ngIf="kpis()[1].trend === 'down'"></icon-trending-down>
+    </app-kpi-card>
+
+    <app-kpi-card [data]="kpis()[2]">
+      <icon-shield size="1.25rem" icon></icon-shield>
+      <icon-trending-up size="1rem" trendIcon *ngIf="kpis()[2].trend === 'up'"></icon-trending-up>
+      <icon-trending-down size="1rem" trendIcon *ngIf="kpis()[2].trend === 'down'"></icon-trending-down>
+    </app-kpi-card>
+
+    <app-kpi-card [data]="kpis()[3]">
+      <icon-users size="1.25rem" icon></icon-users>
+      <icon-trending-up size="1rem" trendIcon *ngIf="kpis()[3].trend === 'up'"></icon-trending-up>
+      <icon-trending-down size="1rem" trendIcon *ngIf="kpis()[3].trend === 'down'"></icon-trending-down>
+    </app-kpi-card>
+  </div>
+  <app-tabs [tabs]="tabs" [activeTab]="activeTab()" (tabChange)="onTabChange($event)"></app-tabs>
+
+  <app-card>
+    <app-card-header>
+      <div class="table-filters">
+        <div class="search-wrapper">
+          <icon-search size="1rem" class="search-icon"></icon-search>
+          <app-input [placeholder]="translationService.t('users.search_placeholder')"
+            (valueChange)="onSearchChange($event)" customClass="search-input"></app-input>
+        </div>
+        <div class="filter-actions">
+          <app-select *ngIf="activeTab() === 'backoffice'" [options]="roleOptions" [value]="roleFilter()"
+            (valueChange)="onRoleFilterChange($event)"></app-select>
+          <app-select [options]="statusOptions" [value]="statusFilter()"
+            (valueChange)="onStatusFilterChange($event)"></app-select>
+          <app-button variant="outline" (clicked)="onExport()" customClass="export-btn">
+            <icon-download size="1rem"></icon-download>
+            {{ translationService.t('users.export') }}
+          </app-button>
+        </div>
+      </div>
+    </app-card-header>
+    <app-card-content customClass="table-content">
+      <app-table [columns]="tableColumns" [data]="paginatedUsers()"
+        [emptyMessage]="translationService.t('users.no_users_found')">
+
+        <ng-template appTableCell="user" let-user>
+          <div class="user-info">
+            <div class="user-avatar">
+              {{ getInitials(user.firstName, user.lastName) }}
+            </div>
+            <div class="user-details">
+              <p class="user-name">{{ user.firstName }} {{ user.lastName }}</p>
+            </div>
+          </div>
+        </ng-template>
+
+        <ng-template appTableCell="email" let-user>
+          <div class="email-info">
+            <p class="email-text">{{ user.email }}</p>
+          </div>
+        </ng-template>
+
+        <!-- Dynamic Column: Wallet Status (Regular) -->
+        <ng-template appTableCell="wallet" let-user>
+          <app-badge [variant]="hasWallet(user.id) ? 'success' : 'secondary'">
+            {{ translationService.t(hasWallet(user.id) ? 'users.has_wallet' : 'users.no_wallet') }}
+          </app-badge>
+        </ng-template>
+
+        <!-- Dynamic Column: Role (Backoffice) -->
+        <ng-template appTableCell="role" let-user>
+          <app-badge [variant]="getBadgeVariant(user.role)">
+            {{ getRoleLabel(user.role) }}
+          </app-badge>
+        </ng-template>
+
+        <ng-template appTableCell="municipalityId" let-user>
+          <span class="municipality-name">{{ getMunicipalityName(user.municipalityId) }}</span>
+        </ng-template>
+
+        <ng-template appTableCell="status" let-user>
+          <app-badge [variant]="getStatusBadgeVariant(user.status)">
+            {{ translationService.t('users.' + user.status) }}
+          </app-badge>
+        </ng-template>
+
+        <ng-template appTableCell="actions" let-user>
+          <app-users-menu-options [userId]="user.id" (actionSelected)="onUserAction($event)"></app-users-menu-options>
+        </ng-template>
+
+      </app-table>
+      <app-table-pagination *ngIf="filteredUsers().length > 0" [currentPage]="currentPage()" [totalPages]="totalPages"
+        [totalItems]="filteredUsers().length" [itemsPerPage]="itemsPerPage()"
+        (pageChange)="onPageChange($event)"></app-table-pagination>
+    </app-card-content>
+  </app-card>
+</div>

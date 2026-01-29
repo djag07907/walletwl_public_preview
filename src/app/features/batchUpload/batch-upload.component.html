@@ -1,0 +1,91 @@
+<div class="batch-upload-container">
+    <div class="batch-upload-header">
+        <div class="header-content">
+            <button class="back-button" (click)="onCancel()">
+                <icon-arrow-left size="1.25rem"></icon-arrow-left>
+            </button>
+            <div class="header-text">
+                <h1 class="batch-upload-title">Batch Upload Billing Records</h1>
+                <p class="batch-upload-subtitle">Upload an Excel file to process bulk billing records for municipal
+                    services.</p>
+            </div>
+            <app-button variant="outline" (clicked)="onDownloadTemplate()" customClass="download-template-btn">
+                <icon-download size="1rem"></icon-download>
+                Download Template
+            </app-button>
+        </div>
+    </div>
+
+    <div class="requirements-banner">
+        <div class="banner-icon">
+            <icon-info-circle color="#3b82f6" size="1.25rem"></icon-info-circle>
+        </div>
+        <div class="banner-content">
+            <p class="banner-text">
+                Please ensure your <span class="highlight">.xlsx</span> file includes exactly these 7 columns in order:
+            </p>
+            <div class="columns-list">
+                <span class="column-tag" *ngFor="let col of columns">{{ col }}</span>
+            </div>
+        </div>
+        <a href="#" class="view-guide" (click)="$event.preventDefault()">
+            View Formatting Guide
+            <icon-arrow-right size="1rem"></icon-arrow-right>
+        </a>
+    </div>
+
+    <div class="upload-area" [class.dragging]="isDragging" (dragover)="onDragOver($event)"
+        (dragleave)="onDragLeave($event)" (drop)="onDrop($event)">
+        <div class="upload-content">
+            <div class="upload-icon-wrapper">
+                <icon-cloud-upload size="2.5rem" color="#3b82f6"></icon-cloud-upload>
+            </div>
+            <h3 class="upload-title">Drag and drop your Excel file here</h3>
+            <p class="upload-subtitle">Supported format: .xlsx only. Maximum file size: 50MB.</p>
+
+            <div class="or-divider">
+                <span class="divider-line"></span>
+                <span class="divider-text">OR</span>
+                <span class="divider-line"></span>
+            </div>
+
+            <app-button (clicked)="onBrowseFiles()" customClass="browse-btn">
+                <icon-folder-tree size="1rem"></icon-folder-tree>
+                Browse Files
+            </app-button>
+            <input type="file" id="fileInput" (change)="onFileSelected($event)" accept=".xlsx, .xls"
+                style="display: none;">
+
+            <div class="selected-file" *ngIf="selectedFile">
+                <span class="file-name">{{ selectedFile.name }}</span>
+                <button class="remove-file" (click)="selectedFile = null; $event.stopPropagation()">×</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="actions-footer">
+        <button class="cancel-link" (click)="onCancel()" [disabled]="isProcessing()">Cancel</button>
+        <app-button [disabled]="!selectedFile || isProcessing()" (clicked)="onProcessUpload()"
+            customClass="process-btn">
+            <icon-check-circle size="1rem" *ngIf="!selectedFile"></icon-check-circle>
+            <icon-check-circle size="1rem" *ngIf="selectedFile && !isProcessing()" color="#fff"></icon-check-circle>
+            <i class="pi pi-spin pi-spinner" *ngIf="isProcessing()" style="margin-right: 8px;"></i>
+            {{ isProcessing() ? 'Processing File...' : 'Process Upload' }}
+        </app-button>
+    </div>
+
+    <div class="info-cards">
+        <app-card customClass="info-card" *ngFor="let req of requirements">
+            <div class="info-header">
+                <div class="info-icon" [style.background-color]="req.color + '15'">
+                    <icon-check-circle *ngIf="req.icon === 'check-circle'" [color]="req.color"
+                        size="1.25rem"></icon-check-circle>
+                    <icon-clock *ngIf="req.icon === 'clock'" [color]="req.color" size="1.25rem"></icon-clock>
+                    <icon-lock *ngIf="req.icon === 'lock'" [color]="req.color" size="1.25rem"></icon-lock>
+                </div>
+                <h4 class="info-title">{{ req.title }}</h4>
+            </div>
+            <p class="info-description">{{ req.description }}</p>
+        </app-card>
+    </div>
+</div>

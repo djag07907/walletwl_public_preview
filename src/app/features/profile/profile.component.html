@@ -1,0 +1,201 @@
+<div class="profile-container">
+  <div class="profile-header">
+    <h1 class="profile-title">{{ translationService.t('profile.title') }}</h1>
+    <p class="profile-subtitle">{{ translationService.t('profile.subtitle') }}</p>
+  </div>
+
+  <div *ngIf="successMessage" class="alert-success">
+    <icon-check-circle [size]="'1.25rem'" [color]="'#059669'"></icon-check-circle>
+    <span>{{ successMessage }}</span>
+  </div>
+
+  <div class="profile-grid">
+    <app-card class="profile-picture-card">
+      <app-card-header>
+        <app-card-title>{{ translationService.t('profile.profile_picture') }}</app-card-title>
+        <p class="card-description">{{ translationService.t('profile.update_photo') }}</p>
+      </app-card-header>
+      <app-card-content>
+        <div class="avatar-section">
+          <div class="avatar-large">
+            {{ getUserInitials() }}
+          </div>
+          <app-button variant="outline" (click)="onUploadPhoto()">
+            <icon-upload [size]="'1rem'"></icon-upload>
+            <span>{{ translationService.t('profile.upload_photo') }}</span>
+          </app-button>
+          <p class="avatar-hint">{{ translationService.t('profile.photo_hint') }}</p>
+        </div>
+      </app-card-content>
+    </app-card>
+
+    <app-card class="account-info-card">
+      <app-card-header>
+        <app-card-title>{{ translationService.t('profile.account_info') }}</app-card-title>
+        <p class="card-description">{{ translationService.t('profile.role_company_details') }}</p>
+      </app-card-header>
+      <app-card-content>
+        <div class="info-grid">
+          <div class="info-item">
+            <label class="info-label">{{ translationService.t('profile.role') }}</label>
+            <div class="info-value">
+              <icon-shield [size]="'1rem'" [color]="'var(--primary)'"></icon-shield>
+              <app-badge variant="secondary">{{ user.role }}</app-badge>
+            </div>
+          </div>
+
+          <div class="info-item">
+            <label class="info-label">{{ translationService.t('profile.status') }}</label>
+            <app-badge variant="success">{{ translationService.t('profile.active') }}</app-badge>
+          </div>
+
+          <div class="info-item full-width">
+            <label class="info-label">{{ translationService.t('profile.company') }}</label>
+            <div class="company-info">
+              <icon-building [size]="'1.25rem'" [color]="'var(--primary)'"></icon-building>
+              <div>
+                <p class="company-name">{{ company.name }}</p>
+                <p class="company-details">{{ company.currency }} • {{ company.timezone }}</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="info-item full-width">
+            <label class="info-label">{{ translationService.t('profile.member_since') }}</label>
+            <div class="info-value">
+              <icon-calendar [size]="'1rem'" [color]="'#6b7280'"></icon-calendar>
+              <span>{{ getMemberSince() }}</span>
+            </div>
+          </div>
+        </div>
+      </app-card-content>
+    </app-card>
+  </div>
+
+  <app-tabs [tabs]="tabs" [activeTab]="activeTab" (tabChange)="onTabChange($event)">
+    <div *ngIf="activeTab === 'personal'" class="tab-panel">
+      <app-card>
+        <app-card-header>
+          <div class="card-header-with-action">
+            <div>
+              <app-card-title>{{ translationService.t('profile.personal_information') }}</app-card-title>
+              <p class="card-description">{{ translationService.t('profile.update_personal_details') }}</p>
+            </div>
+            <app-button *ngIf="!isEditing" variant="outline" (click)="onEditProfile()">
+              {{ translationService.t('profile.edit') }}
+            </app-button>
+          </div>
+        </app-card-header>
+        <app-card-content>
+          <form [formGroup]="profileForm" class="profile-form">
+            <div class="form-grid">
+              <div class="form-field">
+                <label for="firstName">{{ translationService.t('profile.first_name') }}</label>
+                <app-input id="firstName" formControlName="firstName" [disabled]="!isEditing"></app-input>
+              </div>
+
+              <div class="form-field">
+                <label for="lastName">{{ translationService.t('profile.last_name') }}</label>
+                <app-input id="lastName" formControlName="lastName" [disabled]="!isEditing"></app-input>
+              </div>
+            </div>
+
+            <div class="form-field">
+              <label for="email">{{ translationService.t('profile.email_address') }}</label>
+              <div class="input-with-icon">
+                <icon-mail [size]="'1rem'" [color]="'#6b7280'" class="input-icon"></icon-mail>
+                <app-input id="email" type="email" formControlName="email" [disabled]="!isEditing"
+                  class="input-with-padding"></app-input>
+              </div>
+            </div>
+
+            <div class="form-field">
+              <label for="phone">{{ translationService.t('profile.phone_number') }}</label>
+              <app-input id="phone" type="tel" [placeholder]="translationService.t('profile.phone_placeholder')"
+                formControlName="phone" [disabled]="!isEditing"></app-input>
+            </div>
+
+            <div *ngIf="isEditing" class="form-actions">
+              <app-button (click)="onSaveProfile()" [disabled]="isSaving">
+                <icon-save [size]="'1rem'"></icon-save>
+                <span>{{ isSaving ? translationService.t('profile.saving') :
+                  translationService.t('profile.save_changes') }}</span>
+              </app-button>
+              <app-button variant="outline" (click)="onCancelEdit()" [disabled]="isSaving">
+                {{ translationService.t('profile.cancel') }}
+              </app-button>
+            </div>
+          </form>
+        </app-card-content>
+      </app-card>
+    </div>
+
+    <div *ngIf="activeTab === 'security'" class="tab-panel">
+      <app-card>
+        <app-card-header>
+          <app-card-title>{{ translationService.t('profile.change_password') }}</app-card-title>
+          <p class="card-description">{{ translationService.t('profile.update_password_secure') }}</p>
+        </app-card-header>
+        <app-card-content>
+          <form [formGroup]="passwordForm" class="password-form">
+            <div class="password-form-layout">
+              <div class="password-fields">
+                <div class="form-field">
+                  <label for="currentPassword">{{ translationService.t('profile.current_password') }}</label>
+                  <div class="password-input-wrapper">
+                    <app-input id="currentPassword" [type]="showCurrentPassword ? 'text' : 'password'"
+                      formControlName="currentPassword"></app-input>
+                    <button type="button" class="password-toggle" (click)="toggleCurrentPasswordVisibility()">
+                      <icon-eye *ngIf="!showCurrentPassword" [size]="'1rem'" [color]="'#6b7280'"></icon-eye>
+                      <icon-eye-off *ngIf="showCurrentPassword" [size]="'1rem'" [color]="'#6b7280'"></icon-eye-off>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="form-field">
+                  <label for="newPassword">{{ translationService.t('profile.new_password') }}</label>
+                  <div class="password-input-wrapper">
+                    <app-input id="newPassword" [type]="showNewPassword ? 'text' : 'password'"
+                      formControlName="newPassword"></app-input>
+                    <button type="button" class="password-toggle" (click)="toggleNewPasswordVisibility()">
+                      <icon-eye *ngIf="!showNewPassword" [size]="'1rem'" [color]="'#6b7280'"></icon-eye>
+                      <icon-eye-off *ngIf="showNewPassword" [size]="'1rem'" [color]="'#6b7280'"></icon-eye-off>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="form-field">
+                  <label for="confirmPassword">{{ translationService.t('profile.confirm_new_password') }}</label>
+                  <div class="password-input-wrapper">
+                    <app-input id="confirmPassword" [type]="showConfirmPassword ? 'text' : 'password'"
+                      formControlName="confirmPassword"></app-input>
+                    <button type="button" class="password-toggle" (click)="toggleConfirmPasswordVisibility()">
+                      <icon-eye *ngIf="!showConfirmPassword" [size]="'1rem'" [color]="'#6b7280'"></icon-eye>
+                      <icon-eye-off *ngIf="showConfirmPassword" [size]="'1rem'" [color]="'#6b7280'"></icon-eye-off>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="password-requirements">
+                <p class="requirements-title">{{ translationService.t('profile.password_requirements') }}</p>
+                <ul class="requirements-list">
+                  <li>{{ translationService.t('profile.requirement_length') }}</li>
+                  <li>{{ translationService.t('profile.requirement_case') }}</li>
+                  <li>{{ translationService.t('profile.requirement_number') }}</li>
+                  <li>{{ translationService.t('profile.requirement_special') }}</li>
+                </ul>
+              </div>
+            </div>
+
+            <app-button (click)="onChangePassword()" [disabled]="isSaving">
+              <icon-save [size]="'1rem'"></icon-save>
+              <span>{{ isSaving ? translationService.t('profile.updating') :
+                translationService.t('profile.update_password') }}</span>
+            </app-button>
+          </form>
+        </app-card-content>
+      </app-card>
+    </div>
+  </app-tabs>
+</div>

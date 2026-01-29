@@ -1,0 +1,81 @@
+<div class="super-admin-container">
+  <div class="super-admin-layout">
+    <app-super-admin-top-bar></app-super-admin-top-bar>
+
+    <main class="super-admin-main">
+      <div class="content-wrapper">
+        <div class="page-header">
+          <h1 class="page-title">Super Admin Portal</h1>
+          <p class="page-subtitle">Welcome back. Select a jurisdiction to manage or perform system-level tasks.</p>
+        </div>
+        <div class="selection-card">
+          <div class="card-header">
+            <i class="pi pi-building"></i>
+            <div class="header-content">
+              <h3>Central Jurisdiction Management</h3>
+              <p>Access and impersonate any municipality within the platform to manage their local settings and
+                collections.</p>
+            </div>
+          </div>
+
+          <div class="card-body">
+            <div class="form-group">
+              <label for="municipality-select">Jurisdiction Access</label>
+              <select id="municipality-select" [(ngModel)]="selectedMunicipality" class="form-select">
+                <option value="" disabled selected>Search or select a municipality...</option>
+                <option *ngFor="let municipality of municipalities" [value]="municipality.id">
+                  {{ municipality.name }}
+                </option>
+              </select>
+            </div>
+
+            <div class="card-footer">
+              <div class="info-message">
+                <i class="pi pi-info-circle"></i>
+                <p>You will be logged in as a local admin for the selected entity.</p>
+              </div>
+              <button class="btn btn-primary" (click)="onEnterDashboard()" [disabled]="!selectedMunicipality">
+                Enter Dashboard
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="action-grid">
+          <div class="action-card" (click)="onCreateMunicipality()">
+            <div class="card-icon">
+              <i class="pi pi-plus"></i>
+            </div>
+            <div class="card-content">
+              <h4>Create New Municipality</h4>
+              <p>Launch the onboarding wizard to provision a new city, town, or regional jurisdiction on the platform.
+              </p>
+            </div>
+            <i class="pi pi-arrow-right card-arrow"></i>
+          </div>
+
+          <div class="action-card" (click)="onGlobalConfig()">
+            <div class="card-icon">
+              <i class="pi pi-cog"></i>
+            </div>
+            <div class="card-content">
+              <h4>Global System Configurations</h4>
+              <p>Manage platform-wide API keys, tax calculation rules, master system roles, and global audit logs.</p>
+            </div>
+            <i class="pi pi-arrow-right card-arrow"></i>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="super-admin-footer">
+      <p class="copyright">© 2024 Municipal Gateway Platform. All rights reserved.</p>
+      <div class="footer-links">
+        <a href="#">System Health</a>
+        <a href="#">Audit Logs</a>
+        <a href="#">Documentation</a>
+        <span class="version">v2.4.1-stable</span>
+      </div>
+    </footer>
+  </div>
+</div>

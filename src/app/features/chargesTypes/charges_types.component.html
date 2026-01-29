@@ -1,0 +1,67 @@
+<div class="charges-container">
+    <div class="charges-header">
+        <div class="header-content">
+            <div class="header-text">
+                <h1 class="charges-title">{{ translationService.t('charge_types.title') }}</h1>
+                <p class="charges-subtitle">{{ translationService.t('charge_types.subtitle') }}</p>
+            </div>
+            <app-button (clicked)="onAddChargeType()" customClass="add-btn">
+                <icon-plus size="1.1rem"></icon-plus>
+                {{ translationService.t('charge_types.add_charge_type') }}
+            </app-button>
+        </div>
+    </div>
+
+    <app-card>
+        <app-card-header>
+            <div class="table-filters">
+                <div class="search-wrapper">
+                    <icon-search size="1rem" class="search-icon"></icon-search>
+                    <app-input [placeholder]="translationService.t('charge_types.search_placeholder')"
+                        (valueChange)="onSearchChange($event)" customClass="search-input"></app-input>
+                </div>
+                <div class="filter-actions">
+                    <app-select [options]="categoryOptions" [value]="categoryFilter"
+                        (valueChange)="onCategoryFilterChange($event)"></app-select>
+                    <app-button variant="outline" (clicked)="onExport()" customClass="export-btn">
+                        <icon-download size="1rem"></icon-download>
+                        {{ translationService.t('billing_records.export') }}
+                    </app-button>
+                </div>
+            </div>
+        </app-card-header>
+        <app-card-content customClass="table-content">
+            <app-table [columns]="tableColumns" [data]="paginatedTypes"
+                [emptyMessage]="translationService.t('table.no_data')">
+
+                <ng-template appTableCell="code" let-type>
+                    <app-charge-type-cell [type]="type"></app-charge-type-cell>
+                </ng-template>
+                <ng-template appTableCell="description" let-type>
+                    <span class="text-sm font-medium text-gray-900">{{ translationService.t(type.description) }}</span>
+                </ng-template>
+                <ng-template appTableCell="category" let-type>
+                    <app-category-cell [type]="type"></app-category-cell>
+                </ng-template>
+                <ng-template appTableCell="defaultAmount" let-type>
+                    <span class="text-sm font-semibold text-gray-900">Q. {{ type.defaultAmount | number:'1.0-2'
+                        }}</span>
+                </ng-template>
+                <ng-template appTableCell="taxable" let-type>
+                    <app-taxable-cell [type]="type"></app-taxable-cell>
+                </ng-template>
+                <ng-template appTableCell="status" let-type>
+                    <app-charge-status-cell [type]="type"></app-charge-status-cell>
+                </ng-template>
+
+                <ng-template appTableCell="actions" let-type>
+                    <app-charge-actions-cell [type]="type"
+                        [onActionSelected]="onChargeAction.bind(this)"></app-charge-actions-cell>
+                </ng-template>
+            </app-table>
+            <app-table-pagination *ngIf="filteredTypes.length > 0" [currentPage]="currentPage" [totalPages]="totalPages"
+                [totalItems]="filteredTypes.length" [itemsPerPage]="itemsPerPage"
+                (pageChange)="onPageChange($event)"></app-table-pagination>
+        </app-card-content>
+    </app-card>
+</div>

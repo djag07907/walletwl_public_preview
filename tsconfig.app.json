@@ -1,0 +1,22 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./out-tsc/app",
+    "types": ["node"],
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "paths": {
+      "@app/*": ["app/*"],
+      "@core/*": ["app/core/*"],
+      "@services/*": ["app/core/services/*"],
+      "@commons/*": ["app/commons/*"],
+      "@features/*": ["app/features/*"],
+      "@routes/*": ["app/routes/*"],
+      "@resources/*": ["app/resources/*"],
+      "@translations/*": ["assets/translations/*"],
+      "jszip": ["./node_modules/jszip/dist/jszip.min.js"]
+    }
+  },
+  "include": ["src/**/*.d.ts", "src/**/*.ts"],
+  "exclude": ["src/**/*.spec.ts"]
+}

@@ -1,0 +1,110 @@
+<div class="payments-container">
+    <div class="payments-header">
+        <div class="header-content">
+            <div class="header-text">
+                <h1 class="payments-title">
+                    {{ translationService.t("payments.title") }}
+                </h1>
+                <p class="payments-subtitle">
+                    {{ translationService.t("payments.subtitle") }}
+                </p>
+            </div>
+            <app-button (clicked)="onAddPayment()" customClass="add-btn">
+                {{ translationService.t("payments.add_payment") }}
+            </app-button>
+        </div>
+    </div>
+
+    <div class="kpi-grid">
+        <app-kpi-card [data]="kpis()[0]">
+            <icon-dollar size="1.25rem" icon></icon-dollar>
+            <icon-trending-up size="1rem" trendIcon *ngIf="kpis()[0].trend === 'up'"></icon-trending-up>
+            <icon-trending-down size="1rem" trendIcon *ngIf="kpis()[0].trend === 'down'"></icon-trending-down>
+        </app-kpi-card>
+
+        <app-kpi-card [data]="kpis()[1]">
+            <icon-billing size="1.25rem" icon></icon-billing>
+            <icon-trending-up size="1rem" trendIcon *ngIf="kpis()[1].trend === 'up'"></icon-trending-up>
+            <icon-trending-down size="1rem" trendIcon *ngIf="kpis()[1].trend === 'down'"></icon-trending-down>
+        </app-kpi-card>
+
+        <app-kpi-card [data]="kpis()[2]">
+            <icon-users size="1.25rem" icon></icon-users>
+            <icon-trending-up size="1rem" trendIcon *ngIf="kpis()[2].trend === 'up'"></icon-trending-up>
+            <icon-trending-down size="1rem" trendIcon *ngIf="kpis()[2].trend === 'down'"></icon-trending-down>
+        </app-kpi-card>
+    </div>
+
+    <app-card>
+        <app-card-header>
+            <div class="table-filters">
+                <div class="search-wrapper">
+                    <icon-search size="1rem" class="search-icon"></icon-search>
+                    <app-input [placeholder]="translationService.t('payments.search_placeholder')"
+                        [value]="searchQuery()" (valueChange)="onSearchChange($event)"
+                        customClass="search-input"></app-input>
+                </div>
+                <div class="filter-actions">
+                    <div class="date-filters">
+                        <app-input type="date" [value]="startDate()" (valueChange)="onStartDateChange($event)"
+                            customClass="date-input"></app-input>
+                        <span class="date-separator">-</span>
+                        <app-input type="date" [value]="endDate()" (valueChange)="onEndDateChange($event)"
+                            customClass="date-input"></app-input>
+                    </div>
+                    <app-select [options]="statusOptions" [value]="statusFilter()"
+                        (valueChange)="onStatusFilterChange($event)"></app-select>
+                    <app-button variant="outline" (clicked)="onClearFilters()" customClass="clear-btn"
+                        *ngIf="searchQuery() || statusFilter() !== 'all' || startDate() || endDate()">
+                        {{ translationService.t("payments.clear_filters") }}
+                    </app-button>
+                    <app-button variant="outline" (clicked)="onExport()" customClass="export-btn">
+                        <icon-download size="1rem"></icon-download>
+                        {{ translationService.t("payments.export") }}
+                    </app-button>
+                </div>
+            </div>
+        </app-card-header>
+
+        <app-card-content customClass="table-content">
+            <app-table [columns]="tableColumns" [data]="paginatedPayments()"
+                [emptyMessage]="translationService.t('payments.no_payments_found')">
+                <ng-template appTableCell="payer" let-payment>
+                    <app-payment-cell [payment]="payment"></app-payment-cell>
+                </ng-template>
+
+                <ng-template appTableCell="reference" let-payment>
+                    <div class="reference-cell">
+                        <span class="ref-number">{{ payment.referenceNumber }}</span>
+                        <span class="billing-ref">{{ translationService.t("payments.billing_ref") }}:
+                            {{ payment.billingRecordNumber }}</span>
+                    </div>
+                </ng-template>
+
+                <ng-template appTableCell="chargeType" let-payment>
+                    <span class="text-sm text-gray-500">{{ payment.chargeType }}</span>
+                </ng-template>
+                <ng-template appTableCell="amount" let-payment>
+                    <span class="revenue-value">Q. {{ getPaymentAmountFormatted(payment.amount) }}</span>
+                </ng-template>
+
+                <ng-template appTableCell="date" let-payment>
+                    <span class="text-sm text-gray-500">{{
+                        payment.paymentDate | date : "shortDate"
+                        }}</span>
+                </ng-template>
+
+                <ng-template appTableCell="status" let-payment>
+                    <app-status-cell [payment]="payment"></app-status-cell>
+                </ng-template>
+                <ng-template appTableCell="actions" let-payment>
+                    <app-actions-cell [payment]="payment" (actionSelected)="onPaymentAction($event)"></app-actions-cell>
+                </ng-template>
+            </app-table>
+
+            <app-table-pagination *ngIf="filteredPayments().length > 0" [currentPage]="currentPage()"
+                [totalPages]="totalPages" [totalItems]="filteredPayments().length" [itemsPerPage]="itemsPerPage()"
+                (pageChange)="onPageChange($event)"></app-table-pagination>
+        </app-card-content>
+    </app-card>
+</div>

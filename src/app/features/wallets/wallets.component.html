@@ -1,0 +1,104 @@
+<div class="wallets-container">
+    <div class="wallets-header">
+        <div class="header-content">
+            <div class="header-text">
+                <h1 class="wallets-title">{{ translationService.t('wallets.title') }}</h1>
+                <p class="wallets-subtitle">{{ translationService.t('wallets.subtitle') }}</p>
+            </div>
+            <app-button (clicked)="onAddWallet()" customClass="add-btn">
+                {{ translationService.t('wallets.add_wallet') }}
+            </app-button>
+        </div>
+    </div>
+
+    <div class="kpi-grid">
+        <app-kpi-card [data]="kpis[0]">
+            <icon-building size="1.25rem" icon></icon-building>
+            <icon-trending-up size="1rem" trendIcon *ngIf="kpis[0].trend === 'up'"></icon-trending-up>
+            <icon-trending-down size="1rem" trendIcon *ngIf="kpis[0].trend === 'down'"></icon-trending-down>
+        </app-kpi-card>
+
+        <app-kpi-card [data]="kpis[1]">
+            <icon-users size="1.25rem" icon></icon-users>
+            <icon-trending-up size="1rem" trendIcon *ngIf="kpis[1].trend === 'up'"></icon-trending-up>
+            <icon-trending-down size="1rem" trendIcon *ngIf="kpis[1].trend === 'down'"></icon-trending-down>
+        </app-kpi-card>
+
+        <app-kpi-card [data]="kpis[2]">
+            <icon-users size="1.25rem" icon></icon-users>
+            <icon-trending-up size="1rem" trendIcon *ngIf="kpis[2].trend === 'up'"></icon-trending-up>
+            <icon-trending-down size="1rem" trendIcon *ngIf="kpis[2].trend === 'down'"></icon-trending-down>
+        </app-kpi-card>
+    </div>
+
+    <app-card>
+        <app-card-header>
+            <div class="table-filters">
+                <div class="search-wrapper">
+                    <icon-search size="1rem" class="search-icon"></icon-search>
+                    <app-input [placeholder]="translationService.t('wallets.search_placeholder')"
+                        (valueChange)="onSearchChange($event)" customClass="search-input"></app-input>
+                </div>
+                <div class="filter-actions">
+                    <app-select [options]="statusOptions" [value]="statusFilter"
+                        (valueChange)="onStatusFilterChange($event)"></app-select>
+                    <app-button variant="outline" (clicked)="onExport()" customClass="export-btn">
+                        <icon-download size="1rem"></icon-download>
+                        {{ translationService.t('wallets.export') }}
+                    </app-button>
+                </div>
+            </div>
+        </app-card-header>
+        <app-card-content customClass="table-content">
+            <app-table [columns]="tableColumns" [data]="paginatedWallets()"
+                [emptyMessage]="translationService.t('wallets.no_wallets_found')">
+                <ng-template appTableCell="dpi" let-wallet>
+                    <div class="wallet-info">
+                        <div class="wallet-icon">
+                            <icon-building size="1.25rem"></icon-building>
+                        </div>
+                        <div class="wallet-details">
+                            <p class="wallet-name">{{ wallet.accountId }}</p>
+                            <p class="wallet-tax-id">{{ wallet.dpi }}</p>
+                        </div>
+                    </div>
+                </ng-template>
+                <ng-template appTableCell="assignedUser" let-wallet>
+                    <div class="contact-details">
+                        <p class="text-sm text-gray-900">{{ wallet.ownerName }}</p>
+                    </div>
+                </ng-template>
+                <ng-template appTableCell="balance" let-wallet>
+                    <div class="contact-details">
+                        <p class="text-sm text-gray-900">Q. {{ wallet.currentBalance | number:'1.2-2' }}</p>
+                    </div>
+                </ng-template>
+                <ng-template appTableCell="assignedMunicipality" let-wallet>
+                    <div class="municipalities-list">
+                        <p class="text-sm text-gray-900">
+                            {{ wallet.assignedMunicipalityId }}
+                        </p>
+                    </div>
+                </ng-template>
+                <ng-template appTableCell="type" let-wallet>
+                    <p class="text-sm text-gray-900 capitalize">{{ wallet.walletType }}</p>
+                </ng-template>
+                <ng-template appTableCell="lastTransactionDate" let-wallet>
+                    <p class="text-sm text-gray-900">{{ wallet.lastTransactionDate | date:'dd/MM/yyyy HH:mm:ss' }}</p>
+                </ng-template>
+                <ng-template appTableCell="status" let-wallet>
+                    <app-badge [variant]="getBadgeVariant(wallet.status)">
+                        {{ translationService.t('wallets.' + wallet.status) }}
+                    </app-badge>
+                </ng-template>
+                <ng-template appTableCell="actions" let-wallet>
+                    <app-wallets-menu-options [id]="wallet.id"
+                        (actionSelected)="onWalletAction($event)"></app-wallets-menu-options>
+                </ng-template>
+            </app-table>
+            <app-table-pagination *ngIf="filteredWallets().length > 0" [currentPage]="currentPage"
+                [totalPages]="totalPages" [totalItems]="filteredWallets().length" [itemsPerPage]="itemsPerPage"
+                (pageChange)="onPageChange($event)"></app-table-pagination>
+        </app-card-content>
+    </app-card>
+</div>

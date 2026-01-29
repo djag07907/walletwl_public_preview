@@ -1,0 +1,218 @@
+<div class="detail-container">
+  <div class="detail-header">
+    <button class="back-button" (click)="onCancel()">
+      <icon-arrow-left size="1.25rem"></icon-arrow-left>
+    </button>
+    <div class="header-content">
+      <div class="header-text">
+        <div class="title-row">
+          <h1 class="detail-title">
+            {{ translationService.t("payments.payment") }}
+            {{ payment()?.referenceNumber || "" }}
+          </h1>
+          <app-badge [variant]="payment()?.status === 'paid' ? 'default' : 'danger'">
+            {{
+            payment()?.status === "paid"
+            ? translationService.t("payments.paid")
+            : translationService.t("payments.refunded")
+            }}
+          </app-badge>
+        </div>
+        <p class="detail-subtitle">
+          {{ translationService.t("payments.processed_on") }}
+          {{ formatDate(payment()?.paymentDate) }} •
+          {{ translationService.t("payments.via") }}
+          {{ getPaymentMethodLabel(payment()?.paymentMethod) }}
+        </p>
+      </div>
+      <div class="header-actions">
+        <app-button variant="outline" size="md" customClass="action-button" (clicked)="onPrint()">
+          <i class="pi pi-print" style="font-size: 1.125rem"></i>
+          <span>{{ translationService.t("payments.print_receipt") }}</span>
+        </app-button>
+      </div>
+    </div>
+  </div>
+
+  <div class="detail-content">
+    <div class="content-grid">
+      <div class="left-column">
+        <app-card customClass="summary-card">
+          <app-card-content customClass="summary-content">
+            <div class="summary-main">
+              <div class="amount-section">
+                <div class="success-icon">
+                  <i class="pi pi-check-circle"></i>
+                </div>
+                <div class="amount-info">
+                  <p class="amount-label">
+                    {{ translationService.t("payments.total_amount_paid") }}
+                  </p>
+                  <p class="amount-value">
+                    Q.{{ formatAmount(payment()?.amount) }}
+                  </p>
+                </div>
+              </div>
+              <div class="divider"></div>
+              <div class="payment-details">
+                <div class="detail-item">
+                  <p class="detail-label">
+                    {{ translationService.t("payments.method") }}
+                  </p>
+                  <div class="detail-value-with-icon">
+                    <i class="pi pi-credit-card" style="font-size: 1rem"></i>
+                    <span>{{
+                      getPaymentMethodLabel(payment()?.paymentMethod)
+                      }}</span>
+                  </div>
+                </div>
+                <div class="detail-item">
+                  <p class="detail-label">
+                    {{ translationService.t("payments.reference") }}
+                  </p>
+                  <div class="detail-value-mono">
+                    <span class="reference-badge">
+                      {{ payment()?.referenceNumber }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </app-card-content>
+        </app-card>
+
+        <app-card>
+          <app-card-header>
+            <div class="section-header">
+              <i class="pi pi-file" style="font-size: 1.25rem"></i>
+              <h3 class="section-title">
+                {{ translationService.t("payments.associated_billing_record") }}
+              </h3>
+            </div>
+          </app-card-header>
+          <app-card-content>
+            <div class="billing-table">
+              <div class="table-header">
+                <span class="table-header-cell">
+                  {{ translationService.t("billing_records.bill_id") }}
+                </span>
+                <span class="table-header-cell">
+                  {{ translationService.t("billing_records.charge_type") }}
+                </span>
+                <span class="table-header-cell">
+                  {{ translationService.t("billing_records.amount") }}
+                </span>
+              </div>
+              <div class="table-row">
+                <span class="table-cell table-cell-mono">
+                  {{ payment()?.billingRecordNumber }}
+                </span>
+                <span class="table-cell">
+                  {{ payment()?.chargeType }}
+                </span>
+                <span class="table-cell table-cell-bold">
+                  Q.{{ formatAmount(payment()?.amount) }}
+                </span>
+              </div>
+            </div>
+            <div class="info-banner" *ngIf="payment()?.status === 'paid'">
+              <i class="pi pi-info-circle"></i>
+              <p>
+                {{ translationService.t("payments.payment_settles_balance") }}
+                {{ payment()?.billingRecordNumber }}.
+              </p>
+            </div>
+          </app-card-content>
+        </app-card>
+
+        <app-card *ngIf="payment()?.notes">
+          <app-card-header>
+            <div class="section-header">
+              <i class="pi pi-file" style="font-size: 1.25rem"></i>
+              <h3 class="section-title">
+                {{ translationService.t("payments.remarks_system_notes") }}
+              </h3>
+            </div>
+          </app-card-header>
+          <app-card-content>
+            <div class="notes-box">
+              <p>{{ payment()?.notes }}</p>
+            </div>
+          </app-card-content>
+        </app-card>
+      </div>
+
+      <div class="right-column">
+        <app-card>
+          <app-card-header>
+            <div class="section-header-with-action">
+              <div class="section-header">
+                <i class="pi pi-user" style="font-size: 1.25rem"></i>
+                <h3 class="section-title">
+                  {{ translationService.t("payments.payer_information") }}
+                </h3>
+              </div>
+            </div>
+          </app-card-header>
+          <app-card-content>
+            <div class="payer-info">
+              <div class="payer-header">
+                <div class="payer-avatar">
+                  {{ getInitials(payment()?.payer?.citizenName) }}
+                </div>
+                <div class="payer-identity">
+                  <p class="payer-name">{{ payment()?.payer?.citizenName }}</p>
+                  <p class="payer-id">
+                    {{ translationService.t("payments.id") }}:
+                    {{ payment()?.payer?.accountId }}
+                  </p>
+                </div>
+              </div>
+              <div class="payer-details">
+                <div class="detail-row">
+                  <div class="detail-icon">
+                    <i class="pi pi-envelope" style="font-size: 1.125rem"></i>
+                  </div>
+                  <div>
+                    <p class="detail-label-small">
+                      {{ translationService.t("payments.email_address") }}
+                    </p>
+                    <p class="detail-value-small">
+                      {{ payment()?.payer?.email }}
+                    </p>
+                  </div>
+                </div>
+                <div class="detail-row">
+                  <div class="detail-icon">
+                    <i class="pi pi-phone" style="font-size: 1.125rem"></i>
+                  </div>
+                  <div>
+                    <p class="detail-label-small">
+                      {{ translationService.t("payments.phone_number") }}
+                    </p>
+                    <p class="detail-value-small">
+                      {{ payment()?.payer?.phone }}
+                    </p>
+                  </div>
+                </div>
+                <div class="detail-row">
+                  <div class="detail-icon">
+                    <i class="pi pi-building" style="font-size: 1.125rem"></i>
+                  </div>
+                  <div>
+                    <p class="detail-label-small">
+                      {{ translationService.t("payments.billing_address") }}
+                    </p>
+                    <p class="detail-value-small">
+                      {{ payment()?.payer?.billingAddress }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </app-card-content>
+        </app-card>
+      </div>
+    </div>
+  </div>
+</div>
