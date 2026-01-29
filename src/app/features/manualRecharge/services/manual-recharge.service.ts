@@ -1,5 +1,5 @@
 import { Injectable, inject } from "@angular/core";
-import { Observable, combineLatest, of } from "rxjs";
+import { Observable, combineLatest, of, from } from "rxjs";
 import { map, catchError, startWith } from "rxjs/operators";
 import {
   Firestore,
@@ -8,6 +8,7 @@ import {
   query,
   orderBy,
   onSnapshot,
+  getDocs,
 } from "@angular/fire/firestore";
 import { WalletsService } from "@app/features/wallets/services/wallets.service";
 import { UsersService } from "@app/features/users/services/users.service";
@@ -144,7 +145,7 @@ export class ManualRechargeService {
   }
 
   /**
-   * Get adjustment history in real-time
+   * Get adjustment history using one-time read to prevent WebSocket overload
    */
   getAdjustments(): Observable<Adjustment[]> {
     const adjustmentsCollection = collection(
@@ -153,22 +154,19 @@ export class ManualRechargeService {
     );
     const q = query(adjustmentsCollection, orderBy("createdAt", "desc"));
 
-    return new Observable<Adjustment[]>((observer) => {
-      const unsubscribe = onSnapshot(
-        q,
-        (snapshot) => {
-          const adjustments = snapshot.docs.map(
-            (doc) => ({ id: doc.id, ...doc.data() }) as Adjustment,
-          );
-          observer.next(adjustments);
-        },
-        (error) => {
-          console.error("Error fetching adjustments from Firestore:", error);
-          observer.next([]); // Fallback to empty array
-        },
-      );
-
-      return () => unsubscribe();
-    }).pipe(startWith([] as Adjustment[]));
+    // Use getDocs for one-time read instead of real-time listener
+    // This prevents WebSocket session overload when combined with users+wallets listeners
+    return from(getDocs(q)).pipe(
+      map((snapshot) => {
+        return snapshot.docs.map(
+          (doc) => ({ id: doc.id, ...doc.data() }) as Adjustment,
+        );
+      }),
+      startWith([] as Adjustment[]),
+      catchError((error) => {
+        console.error("Error fetching adjustments from Firestore:", error);
+        return of([]);
+      }),
+    );
   }
 }
