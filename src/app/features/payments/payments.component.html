@@ -82,7 +82,7 @@
                 </ng-template>
 
                 <ng-template appTableCell="chargeType" let-payment>
-                    <span class="text-sm text-gray-500">{{ payment.chargeType }}</span>
+                    <span class="text-sm text-gray-500">{{ getChargeTypeLabel(payment.chargeType) }}</span>
                 </ng-template>
                 <ng-template appTableCell="amount" let-payment>
                     <span class="revenue-value">Q. {{ getPaymentAmountFormatted(payment.amount) }}</span>

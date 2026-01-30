@@ -30,7 +30,7 @@ export const mockPaymentsData: Payment[] = [
     paymentDate: "2024-03-15T10:30:00Z",
     paymentMethod: "bank_transfer",
     referenceNumber: "BT-99203348",
-    chargeType: "Subscription",
+    chargeType: "subscription",
     status: "paid",
     notes: "Full payment received via wire transfer.",
     payer: {
@@ -51,7 +51,7 @@ export const mockPaymentsData: Payment[] = [
     paymentDate: "2024-03-16T14:20:00Z",
     paymentMethod: "credit_card",
     referenceNumber: "CC-88273911",
-    chargeType: "Consulting",
+    chargeType: "consulting",
     status: "paid",
     notes: "Payment processed via corporate card.",
     payer: {
@@ -72,7 +72,7 @@ export const mockPaymentsData: Payment[] = [
     paymentDate: "2024-03-17T09:15:00Z",
     paymentMethod: "wallet",
     referenceNumber: "WL-77112233",
-    chargeType: "Subscription",
+    chargeType: "subscription",
     status: "paid",
     notes: "Mobile wallet payment.",
     payer: {
@@ -93,7 +93,7 @@ export const mockPaymentsData: Payment[] = [
     paymentDate: "2024-03-18T16:45:00Z",
     paymentMethod: "bank_transfer",
     referenceNumber: "REF-55443322",
-    chargeType: "Subscription",
+    chargeType: "subscription",
     status: "refunded",
     notes: "Refund processed due to duplicate charge.",
     payer: {
@@ -114,7 +114,7 @@ export const mockPaymentsData: Payment[] = [
     paymentDate: "2024-03-20T11:00:00Z",
     paymentMethod: "cash",
     referenceNumber: "CSH-100293",
-    chargeType: "Maintenance",
+    chargeType: "maintenance",
     status: "paid",
     notes: "Over the counter payment.",
     payer: {
@@ -135,7 +135,7 @@ export const mockPaymentsData: Payment[] = [
     paymentDate: "2024-03-21T09:30:00Z",
     paymentMethod: "bank_transfer",
     referenceNumber: "BT-44556677",
-    chargeType: "Freight",
+    chargeType: "freight",
     status: "paid",
     notes: "International wire transfer.",
     payer: {
@@ -156,7 +156,7 @@ export const mockPaymentsData: Payment[] = [
     paymentDate: "2024-03-22T15:15:00Z",
     paymentMethod: "check",
     referenceNumber: "CHK-778899",
-    chargeType: "Consulting",
+    chargeType: "consulting",
     status: "refunded",
     notes: "Returned check.",
     payer: {
@@ -177,7 +177,7 @@ export const mockPaymentsData: Payment[] = [
     paymentDate: "2024-03-23T10:45:00Z",
     paymentMethod: "bank_transfer",
     referenceNumber: "BT-11223344",
-    chargeType: "Utilities",
+    chargeType: "utilities",
     status: "paid",
     notes: "Automatic monthly bill pay.",
     payer: {
@@ -198,7 +198,7 @@ export const mockPaymentsData: Payment[] = [
     paymentDate: "2024-03-24T13:00:00Z",
     paymentMethod: "credit_card",
     referenceNumber: "CC-55667788",
-    chargeType: "Electricity",
+    chargeType: "electricity",
     status: "paid",
     notes: "Paid via online portal.",
     payer: {
@@ -219,7 +219,7 @@ export const mockPaymentsData: Payment[] = [
     paymentDate: "2024-03-25T11:30:00Z",
     paymentMethod: "cash",
     referenceNumber: "CSH-556677",
-    chargeType: "Gardening",
+    chargeType: "gardening",
     status: "paid",
     notes: "Seasonal cleanup fee.",
     payer: {
@@ -240,7 +240,7 @@ export const mockPaymentsData: Payment[] = [
     paymentDate: "2024-03-26T16:20:00Z",
     paymentMethod: "bank_transfer",
     referenceNumber: "BT-88990011",
-    chargeType: "Property Tax",
+    chargeType: "property_tax",
     status: "paid",
     notes: "Quarterly property tax payment.",
     payer: {
@@ -261,7 +261,7 @@ export const mockPaymentsData: Payment[] = [
     paymentDate: "2024-03-27T09:00:00Z",
     paymentMethod: "wallet",
     referenceNumber: "WL-99001122",
-    chargeType: "Membership",
+    chargeType: "membership",
     status: "paid",
     notes: "Annual membership renewal.",
     payer: {

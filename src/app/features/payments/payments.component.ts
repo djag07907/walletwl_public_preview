@@ -321,6 +321,25 @@ export class PaymentsComponent implements OnInit, OnDestroy {
     return status === "paid" ? "default" : "danger";
   }
 
+  getChargeTypeLabel(chargeType: string): string {
+    if (!chargeType) return "";
+
+    // If it's already a full translation key, use it directly
+    if (chargeType.startsWith("charge_types.items.")) {
+      return this.translationService.t(chargeType);
+    }
+
+    // Otherwise, normalize to snake_case and prefix it
+    const normalized = chargeType
+      .toLowerCase()
+      .trim()
+      .replace(/[:]/g, "") // Remove colons (like in "Traffic Violation: Speeding")
+      .replace(/[ ]+/g, "_") // Replace spaces with underscores
+      .replace(/_{2,}/g, "_"); // Remove double underscores
+
+    return this.translationService.t("charge_types.items." + normalized);
+  }
+
   onPaymentAction(event: { action: string; id: string }): void {
     if (event.action === "edit") {
       this.router.navigate(["home/payments/edit", event.id]);

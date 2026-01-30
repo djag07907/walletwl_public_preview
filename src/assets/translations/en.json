@@ -718,15 +718,21 @@
     "creating": "Creating...",
     "items": {
       "property_tax_residential": "Property Tax - Residential",
+      "property_tax": "Property Tax",
       "water_consumption": "Water Consumption",
       "electricity_consumption": "Electricity Consumption",
+      "electricity": "Electricity",
       "gas_consumption": "Gas Consumption",
       "traffic_violation_speeding": "Traffic Violation: Speeding",
       "building_permit_commercial": "Building Permit - Commercial",
       "subscription": "Subscription",
       "one_time": "One-time",
       "maintenance": "Maintenance",
-      "consulting": "Consulting"
+      "consulting": "Consulting",
+      "freight": "Freight",
+      "utilities": "Utilities",
+      "gardening": "Gardening",
+      "membership": "Membership"
     }
   },
   "charge_categories": {

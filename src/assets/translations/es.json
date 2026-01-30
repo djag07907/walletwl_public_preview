@@ -718,15 +718,21 @@
     "creating": "Creando...",
     "items": {
       "property_tax_residential": "Impuesto sobre Bienes Inmuebles - Residencial",
+      "property_tax": "Impuesto sobre Bienes Inmuebles",
       "water_consumption": "Consumo de Agua",
       "electricity_consumption": "Consumo Eléctrico",
+      "electricity": "Electricidad",
       "gas_consumption": "Consumo de Gas",
       "traffic_violation_speeding": "Infracción de Tráfico: Exceso de Velocidad",
       "building_permit_commercial": "Permiso de Construcción - Comercial",
       "subscription": "Suscripción",
       "one_time": "Pago Único",
       "maintenance": "Mantenimiento",
-      "consulting": "Consultoría"
+      "consulting": "Consultoría",
+      "freight": "Flete",
+      "utilities": "Servicios Públicos",
+      "gardening": "Jardinería",
+      "membership": "Membresía"
     }
   },
   "charge_categories": {
